@@ -2,6 +2,24 @@ if (Meteor.isClient) {
   // counter starts at 0
   Session.setDefault('counter', 0);
 
+  Template.login.events({
+    'click #venmo-login': function(event) {
+        Meteor.loginWithVenmo({}, function(err){
+            if (err) {
+                throw new Meteor.Error("Facebook login failed");
+            }
+        });
+    },
+ 
+    'click #logout': function(event) {
+        Meteor.logout(function(err){
+            if (err) {
+                throw new Meteor.Error("Logout failed");
+            }
+        })
+    }
+  });
+
   Template.hello.helpers({
     counter: function () {
       return Session.get('counter');
@@ -29,6 +47,6 @@ if (Meteor.isServer) {
       scope: "access_profile",
       secret: "s4CH2SZAwKJuLtFvn7eUyEcJMDr5bcbt"
     });
-    
+
   });
 }

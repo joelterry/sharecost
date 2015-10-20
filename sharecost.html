@@ -3,11 +3,18 @@
 </head>
 
 <body>
-  {{> loginButtons}}
+  {{> login}}
   <h1>Welcome to Meteor!</h1>
-
-  {{> hello}}
 </body>
+
+<template name="login">
+    {{#if currentUser}}
+        {{currentUser.services.venmo.first_name}}
+        <button id="logout">Logout</button>
+    {{else}}
+        <button id="venmo-login" class="btn btn-default"> Login with Venmo</button>
+    {{/if}}
+</template>
 
 <template name="hello">
   <button>Click Me</button>

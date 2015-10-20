@@ -1,0 +1,1 @@
+/* Client-side module for managing current user */

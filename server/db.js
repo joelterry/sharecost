@@ -1,0 +1,1 @@
+/* Wrapper for the MongoDB database. The "model" in MVC */

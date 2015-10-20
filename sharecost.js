@@ -18,7 +18,17 @@ if (Meteor.isClient) {
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
-    console.log("Hey isn't this cool :)");
-    // code to run on server at startup
+
+		ServiceConfiguration.configurations.remove({
+      service: "venmo"
+    });
+
+    ServiceConfiguration.configurations.insert({
+      service: "venmo",
+      clientId: "3008",
+      scope: "access_profile",
+      secret: "s4CH2SZAwKJuLtFvn7eUyEcJMDr5bcbt"
+    });
+    
   });
 }

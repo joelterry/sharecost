@@ -9,7 +9,7 @@
 
 <template name="login">
     {{#if currentUser}}
-        {{currentUser.services.venmo.first_name}}
+        {{currentUser.services.venmo.display_name}}
         <button id="logout">Logout</button>
     {{else}}
         <button id="venmo-login" class="btn btn-default"> Login with Venmo</button>

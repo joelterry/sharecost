@@ -2,10 +2,11 @@ if (Meteor.isClient) {
 
   Template.login.events({
     'click #venmo-login': function(event) {
-        Meteor.loginWithVenmo({}, function(err){
-            if (err) {
-                throw new Meteor.Error("Facebook login failed");
-            }
+        Meteor.loginWithVenmo(function (err, res) {
+          if (err !== undefined)
+            console.log('sucess ' + res)
+          else
+            console.log('login failed ' + err)
         });
     },
  

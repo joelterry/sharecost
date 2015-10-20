@@ -21,4 +21,3 @@ insecure                # Allow all DB writes from clients (for prototyping)
 pcooney10:accounts-venmo
 service-configuration
 accounts-ui
-accounts-password

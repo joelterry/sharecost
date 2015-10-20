@@ -3,12 +3,15 @@
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
-
-  {{> hello}}
+  {{> login}}
+  <h1>Welcome to ShareCost!</h1>
 </body>
 
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+<template name="login">
+    {{#if currentUser}}
+        {{currentUser.services.venmo.first_name}}
+        <button id="logout">Logout</button>
+    {{else}}
+        <button id="venmo-login" class="btn btn-default"> Login with Venmo</button>
+    {{/if}}
 </template>

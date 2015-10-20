@@ -1,24 +1,38 @@
 if (Meteor.isClient) {
-  // counter starts at 0
-  Session.setDefault('counter', 0);
 
-  Template.hello.helpers({
-    counter: function () {
-      return Session.get('counter');
-    }
-  });
-
-  Template.hello.events({
-    'click button': function () {
-      // increment the counter when button is clicked
-      Session.set('counter', Session.get('counter') + 1);
+  Template.login.events({
+    'click #venmo-login': function(event) {
+        Meteor.loginWithVenmo(function (err, res) {
+          if (err !== undefined)
+            console.log('sucess ' + res)
+          else
+            console.log('login failed ' + err)
+        });
+    },
+ 
+    'click #logout': function(event) {
+        Meteor.logout(function(err){
+            if (err) {
+                throw new Meteor.Error("Logout failed");
+            }
+        })
     }
   });
 }
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
-    console.log("Hey isn't this cool :)");
-    // code to run on server at startup
+
+		ServiceConfiguration.configurations.remove({
+      service: "venmo"
+    });
+
+    ServiceConfiguration.configurations.insert({
+      service: "venmo",
+      clientId: "3008",
+      scope: "access_profile+access_friends",
+      secret: "s4CH2SZAwKJuLtFvn7eUyEcJMDr5bcbt"
+    });
+
   });
 }

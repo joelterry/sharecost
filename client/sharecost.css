@@ -1,1 +1,27 @@
 /* CSS declarations go here */
+
+/* TOPBAR */
+.topbar {
+	width: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	text-align: center;
+	background-color: #29857C;
+	height: 51px;
+}
+.topbar h1 {
+	color: white;
+	font-size: 36px;
+	margin: 0;
+	padding-top: 5px;
+}
+.topbar-ghost {
+	height: 51px;
+}
+.home-content {
+	margin-top: 5%;
+}
+#center {
+	float: none;
+}

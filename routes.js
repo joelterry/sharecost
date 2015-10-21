@@ -3,15 +3,29 @@
 // });
 
 Router.route('/login', function () {
-  if (Meteor.user())
+  if (Meteor.user()) {
   	this.redirect('/');
-  else
+  } else {
+    this.layout('BaseLayout');
   	this.render('login');
+  }
+});
+
+Router.route('/create', function () {
+    if (Meteor.user()) {
+        this.layout('BaseLayout');
+        this.render('create');
+    } else {
+        this.redirect('/login');
+    }
 });
 
 Router.route('/', function () {
-  if (Meteor.user())
+  if (Meteor.user()) {
+    this.layout('BaseLayout');
   	this.render('home');
-  else
+  } else {
   	this.redirect('/login');
+  }
+
 });

@@ -1,28 +1,50 @@
 <head>
-  <title>sharecost</title>
+  <title>ShareCost</title>
+  <meta name="description" content="ShareCost helps you split purchases between groups of people quickly and easily. Just log in with Venmo to start sharing.">
+
+  <script src="ui.js"></script>
 </head>
 
 <template name="login">
-	<h1>Welcome to ShareCost!</h1>
-	<body>
+  <div class = "row text-center">
+	    <h1>Welcome!</h1>
+  </div>
+  <div class = "row text-center">
 	    {{#if currentUser}}
 	        You are logged in as {{currentUser.services.venmo.display_name}}
 	        <button id="logout">Logout</button>
 	    {{else}}
-	        <button id="venmo-login" class="btn btn-default"> Login with Venmo</button>
+	        <button id="venmo-login" class="btn btn-default">Login with Venmo</button>
 	    {{/if}}
-    </body>
+  </div>
 </template>
 
 <template name='home'>
-	<body> 
-		{{#if currentUser}}
-			You are logged in!
-			<button id="logout">Logout</button>
-		{{else}}
-			<h2>Waiting to log in</h2>
-		{{/if}}
-	</body>
+  <div class = "row">
+    <div id = "center" class = "col-xs-8 center-block text-center home-content">
+  		{{#if currentUser}}
+  			<p>You are logged in!</p>
+  			<p><button id="logout" class="btn btn-default">Logout</button></p>
+        <p><button id="create" class="btn btn-default">Create a Proposal</button></p>
+  		{{else}}
+  			<h2>Waiting to log in</h2>
+  		{{/if}}
+    </div>
+  </div>
+</template>
+
+<template name='create'>
+  <div class = "row text-center">
+    <h1>Create a Proposal</h1>
+  </div>
+</template>
+
+<template name="BaseLayout">
+    <div class = "topbar"><h1>ShareCost</h1></div>
+    <div class = "topbar-ghost"></div>
+    <div class = "container">
+      {{> yield}}
+    </div>
 </template>
 
 

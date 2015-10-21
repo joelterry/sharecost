@@ -18,7 +18,7 @@ if (Meteor.isClient) {
             if (err) {
                 throw new Meteor.Error("Logout failed");
             }
-        })
+        });
     }
   });
 

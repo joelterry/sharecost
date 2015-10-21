@@ -2,15 +2,26 @@
 //   layoutTemplate: 'BaseLayout'
 // });
 
-Router.route('/', function () {
-  this.render('login');
-});
-
-Router.route('/home', function () {
-  this.layout('BaseLayout');
-  this.render('home');
+Router.route('/login', function () {
+  if (Meteor.user())
+  	this.redirect('/');
+  else
+  	this.render('login');
 });
 
 Router.route('/create', function () {
-    this.render('create');
+    if (Meteor.user())
+        this.render('create');
+    else
+        this.redirect('/login');
+});
+
+Router.route('/', function () {
+  if (Meteor.user()){
+    this.layout('BaseLayout');
+  	this.render('home');
+  }else {
+  	this.redirect('/login');
+  }
+
 });

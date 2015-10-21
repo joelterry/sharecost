@@ -3,12 +3,14 @@ if (Meteor.isClient) {
   Template.login.events({
     'click #venmo-login': function(event) {
         Meteor.loginWithVenmo(function (err, res) {
-          if (err !== undefined)
-            console.log('sucess ' + res)
-          else
-            console.log('login failed ' + err)
+          if (err !== undefined){
+            console.log('sucess ' + res);
+          }
+          else{
+            console.log('login failed ' + err);
+          }
+          Router.go('/');
         });
-        Router.go('/home');
     },
  
     'click #logout': function(event) {
@@ -16,7 +18,7 @@ if (Meteor.isClient) {
             if (err) {
                 throw new Meteor.Error("Logout failed");
             }
-        })
+        });
     }
   });
 

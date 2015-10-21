@@ -2,26 +2,23 @@
 
 Meteor.startup(function () {
 
-	var clientId;
-	var secret;
-
-	if (process.env.NODE_ENV == "development"){
-		clientId = "3008";
-		secret = "s4CH2SZAwKJuLtFvn7eUyEcJMDr5bcbt";
+	if (process.env.NODE_ENV === "development"){
+		var clientId = "3008";
+		var secret = "s4CH2SZAwKJuLtFvn7eUyEcJMDr5bcbt";
 	} else {
-		clientId = "3018";
-		secret = "YaCkWypcB6AGYd7xjcYmFwVrtVTDybAm";
+		var clientId = "3018";
+		var secret = "YaCkWypcB6AGYd7xjcYmFwVrtVTDybAm";
 	}
 
 	ServiceConfiguration.configurations.remove({
-	service: "venmo"
+		service: "venmo"
 	});
 
 	ServiceConfiguration.configurations.insert({
-	service: "venmo",
-	clientId: clientId,
-	scope: "access_profile+access_friends+make_payments",
-	secret: secret
+		service: "venmo",
+		clientId: clientId,
+		scope: "access_profile+access_friends+make_payments",
+		secret: secret
 	});
 
 });

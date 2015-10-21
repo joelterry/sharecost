@@ -7,9 +7,10 @@ Router.route('/', function () {
 });
 
 Router.route('/home', function () {
+  this.layout('BaseLayout');
   this.render('home');
 });
 
 Router.route('/create', function () {
-	this.render('create');
+    this.render('create');
 });

@@ -27,3 +27,12 @@
     <h1>Create a Proposal</h1>
   </body>
 </template>
+
+<template name="BaseLayout">
+  <body>
+    <div class = "topbar"><h1>ShareCost</h1></div>
+    <div class = "topbar-ghost"></div>
+    {{> yield}}
+  </body>
+
+</template>

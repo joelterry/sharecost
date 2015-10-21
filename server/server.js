@@ -30,7 +30,40 @@ Meteor.methods({
 			}
 			Meteor.users.update(Meteor.userId(), {$set: {'venmo_friends': res}});
 		});
-	} 
+	}
+
+	checkVenmoPOST: function(){
+      var user = Meteor.user();
+      var url = "https://sandbox-api.venmo.com/v1/payments";
+
+      console.log(user.services.venmo.accessToken);
+      try {
+        var result = HTTP.call("POST", url,
+          { data: {
+            "access_token": user.services.venmo.accessToken,
+            "user_id": 145434160922624933,
+            "note": "Testing Post",
+            "amount": 0.10
+          }});
+        return result.data;
+      }catch (e){
+        console.log(e);
+        return null;
+      }
+    },
+    checkVenmoGET: function(){
+      var user = Meteor.user();
+      var access_token = user.services.venmo.accessToken;
+      console.log(user.services.venmo.accessToken);
+      var url = "http://api.venmo.com/v1/me?" + access_token;
+      try{
+        var result = HTTP.call("GET", url);
+        return result.data;
+      }catch (e) {
+        console.log(e);
+        return null;
+      }
+    } 
 });
 
 Meteor.startup(function () {

@@ -1,5 +1,8 @@
 <head>
-  <title>sharecost</title>
+  <title>ShareCost</title>
+  <meta name="description" content="ShareCost helps you split purchases between groups of people quickly and easily. Just log in with Venmo to start sharing.">
+
+  <script src="ui.js"></script>
 </head>
 
 <template name="login">
@@ -8,7 +11,7 @@
 	        You are logged in as {{currentUser.services.venmo.display_name}}
 	        <button id="logout">Logout</button>
 	    {{else}}
-	        <button id="venmo-login" class="btn btn-default"> Login with Venmo</button>
+	        <button id="venmo-login" class="btn btn-default">Login with Venmo</button>
 	    {{/if}}
 </template>
 
@@ -32,5 +35,4 @@
     <div class = "topbar-ghost"></div>
     {{> yield}}
   </body>
-
 </template>

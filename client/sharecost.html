@@ -2,18 +2,27 @@
   <title>sharecost</title>
 </head>
 
-<body>
-  {{> login}}
-  <h1>Welcome to ShareCost!</h1>
-</body>
-
 <template name="login">
-    {{#if currentUser}}
-        {{currentUser.services.venmo.first_name}}
-        <button id="logout">Logout</button>
-    {{else}}
-        <button id="venmo-login" class="btn btn-default"> Login with Venmo</button>
-    {{/if}}
+	<h1>Welcome to ShareCost!</h1>
+	<body>
+	    {{#if currentUser}}
+	        You are logged in as {{currentUser.services.venmo.display_name}}
+	        <button id="logout">Logout</button>
+	    {{else}}
+	        <button id="venmo-login" class="btn btn-default"> Login with Venmo</button>
+	    {{/if}}
+    </body>
+</template>
+
+<template name='home'>
+	<body> 
+		{{#if currentUser}}
+			You are logged in!
+			<button id="logout">Logout</button>
+		{{else}}
+			<h2>Waiting to log in</h2>
+		{{/if}}
+	</body>
 </template>
 
 

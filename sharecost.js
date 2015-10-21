@@ -10,17 +10,14 @@ venmo_responses: { }
 */
 var Purchases = new Mongo.Collection("purchases");
 
-if (Meteor.isClient) {
-
-  Meteor.subscribe("purchases"); //should maybe wait until signed in?
-
-}
-
 if (Meteor.isServer) {
-
   /* Server publishes all purchases with current user as a member */
   Meteor.publish("purchases", function() {
     return Purchases.find({members: { $all : [this.userId] }});
   });
+}
 
+if (Meteor.isClient) {
+  /* Server publishes all purchases with current user as a member */
+  Meteor.subscribe("purchases");
 }

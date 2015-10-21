@@ -3,12 +3,14 @@ if (Meteor.isClient) {
   Template.login.events({
     'click #venmo-login': function(event) {
         Meteor.loginWithVenmo(function (err, res) {
-          if (err !== undefined)
-            console.log('sucess ' + res)
-          else
+          if (err !== undefined){
+            console.log('sucess ' + res);
+            Router.go('/home');
+          }
+          else{
             console.log('login failed ' + err)
+          }
         });
-        Router.go('/home');
     },
  
     'click #logout': function(event) {

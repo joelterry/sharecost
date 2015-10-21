@@ -8,7 +8,7 @@ if (Meteor.isClient) {
           else
             console.log('login failed ' + err)
         });
-        Router.go('/index');
+        Router.go('/home');
     },
  
     'click #logout': function(event) {
@@ -20,7 +20,7 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.index.events({
+  Template.home.events({
     'click #logout': function(event) {
         Meteor.logout(function(err){
             if (err) {

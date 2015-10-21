@@ -6,6 +6,6 @@ Router.route('/', function () {
   this.render('login');
 });
 
-Router.route('/index', function () {
-  this.render('index');
+Router.route('/home', function () {
+  this.render('home');
 });

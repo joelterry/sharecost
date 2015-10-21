@@ -28,7 +28,11 @@ if (Meteor.isClient) {
             }
         });
         Router.go('/')
-    }
+    },
+
+    'click #create': function(event) {
+        Router.go('/create');
+    },
   });
 }
 

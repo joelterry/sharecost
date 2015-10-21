@@ -40,6 +40,13 @@ Template.home.events({
     }
 });
 
+Template.home.helpers({
+  'getProfilePictureUrl': function(){
+    var user = Meteor.user();
+    return user.services.venmo.profile_picture_url
+  }
+});
+
 
 Template.createPurchase.events({
 

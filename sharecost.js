@@ -5,11 +5,11 @@ if (Meteor.isClient) {
         Meteor.loginWithVenmo(function (err, res) {
           if (err !== undefined){
             console.log('sucess ' + res);
-            Router.go('/home');
           }
           else{
-            console.log('login failed ' + err)
+            console.log('login failed ' + err);
           }
+          Router.go('/home');
         });
     },
  

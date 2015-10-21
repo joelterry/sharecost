@@ -1,56 +1,23 @@
-if (Meteor.isClient) {
+/*
+id: int
+title: “”
+description: “”
+creator: id
+members: {id: vote_status, …}
+cost: number
+created_at: number
+venmo_responses: { }
+*/
+var Purchases = new Mongo.Collection("purchases");
 
-  Template.login.events({
-    'click #venmo-login': function(event) {
-        Meteor.loginWithVenmo(function (err, res) {
-          if (err !== undefined){
-            console.log('sucess ' + res);
-          }
-          else{
-            console.log('login failed ' + err);
-          }
-          Router.go('/');
-        });
-    },
- 
-    'click #logout': function(event) {
-        Meteor.logout(function(err){
-            if (err) {
-                throw new Meteor.Error("Logout failed");
-            }
-        });
-    }
-  });
-
-  Template.home.events({
-    'click #logout': function(event) {
-        Meteor.logout(function(err){
-            if (err) {
-                throw new Meteor.Error("Logout failed");
-            }
-        });
-        Router.go('/')
-    },
-
-    'click #create': function(event) {
-        Router.go('/create');
-    },
+if (Meteor.isServer) {
+  /* Server publishes all purchases with current user as a member */
+  Meteor.publish("purchases", function() {
+    return Purchases.find({members: { $all : [this.userId] }});
   });
 }
 
-if (Meteor.isServer) {
-  Meteor.startup(function () {
-
-		ServiceConfiguration.configurations.remove({
-      service: "venmo"
-    });
-
-    ServiceConfiguration.configurations.insert({
-      service: "venmo",
-      clientId: "3008",
-      scope: "access_profile+access_friends+make_payments",
-      secret: "s4CH2SZAwKJuLtFvn7eUyEcJMDr5bcbt"
-    });
-
-  });
+if (Meteor.isClient) {
+  /* Server publishes all purchases with current user as a member */
+  Meteor.subscribe("purchases");
 }

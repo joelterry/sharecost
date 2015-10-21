@@ -9,7 +9,7 @@ if (Meteor.isClient) {
           else{
             console.log('login failed ' + err);
           }
-          Router.go('/home');
+          Router.go('/');
         });
     },
  

@@ -3,32 +3,27 @@
 </head>
 
 <template name="login">
-	<h1>Welcome to ShareCost!</h1>
-	<body>
+	<h1>Welcome!</h1>
 	    {{#if currentUser}}
 	        You are logged in as {{currentUser.services.venmo.display_name}}
 	        <button id="logout">Logout</button>
 	    {{else}}
 	        <button id="venmo-login" class="btn btn-default"> Login with Venmo</button>
 	    {{/if}}
-    </body>
 </template>
 
 <template name='home'>
-	<body> 
 		{{#if currentUser}}
 			You are logged in!
 			<button id="logout">Logout</button>
+      <button id="create">Create a Proposal</button>
 		{{else}}
 			<h2>Waiting to log in</h2>
 		{{/if}}
-	</body>
 </template>
 
 <template name='create'>
-  <body> 
     <h1>Create a Proposal</h1>
-  </body>
 </template>
 
 <template name="BaseLayout">

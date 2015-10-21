@@ -8,6 +8,7 @@ if (Meteor.isClient) {
           else
             console.log('login failed ' + err)
         });
+        Router.go('/index');
     },
  
     'click #logout': function(event) {
@@ -16,6 +17,17 @@ if (Meteor.isClient) {
                 throw new Meteor.Error("Logout failed");
             }
         })
+    }
+  });
+
+  Template.index.events({
+    'click #logout': function(event) {
+        Meteor.logout(function(err){
+            if (err) {
+                throw new Meteor.Error("Logout failed");
+            }
+        });
+        Router.go('/')
     }
   });
 }

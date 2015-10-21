@@ -23,3 +23,4 @@ service-configuration
 accounts-ui
 http
 iron:router
+twbs:bootstrap

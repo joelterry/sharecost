@@ -25,6 +25,12 @@
   			<p>You are logged in!</p>
   			<p><button id="logout" class="btn btn-default">Logout</button></p>
         <p><button id="create" class="btn btn-default">Create a Proposal</button></p>
+
+        <ul>
+          {{#each purchases}}
+            {{> purchase_proposal}}
+          {{/each}}
+         </ul>
   		{{else}}
   			<h2>Waiting to log in</h2>
   		{{/if}}
@@ -56,3 +62,8 @@
 		</select>
 	</form>
 </template>
+<template name="purchase_proposal">
+  <div class="title">{{creator}} - {{title}} - {{description}}</div>
+</template>
+
+

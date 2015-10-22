@@ -8,7 +8,7 @@ cost: number
 created_at: number
 venmo_responses: { }
 */
-var Purchases = new Mongo.Collection("purchases");
+Purchases = new Mongo.Collection("purchases");
 Friends = new Mongo.Collection("friends");
 
 if (Meteor.isServer) {

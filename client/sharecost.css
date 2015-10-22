@@ -15,6 +15,10 @@
 	font-size: 36px;
 	margin: 0;
 	padding-top: 5px;
+	width: 200px;
+	position: absolute;
+	top: 0;
+	left: calc(50% - 100px);
 }
 .topbar-ghost {
 	height: 51px;
@@ -22,6 +26,20 @@
 .home-content {
 	margin-top: 5%;
 }
+.right-align {
+	float: right;
+}
+.topbar-pic {
+	margin-right: 20px;
+	height: 51px;
+}
+.topbar-logout {
+	margin-top: 8px;
+	margin-right: 20px;
+}
 #center {
 	float: none;
+}
+#dumbfix {
+	margin-left: -15px;
 }

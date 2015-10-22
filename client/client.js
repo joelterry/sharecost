@@ -50,6 +50,11 @@ Template.home.helpers({
 Template.create.events({
     'click #pay-sandbox': function(event) {
         ret = Meteor.call("pay_sandbox");
+    },
+    'submit .test-post': function(event){
+        event.preventDefault();
+        var text = event.target.text.value;
+        Meteor.call('pay_User', text);
     }
 });
 

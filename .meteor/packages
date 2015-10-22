@@ -24,3 +24,5 @@ accounts-ui
 http
 iron:router
 twbs:bootstrap
+sanjo:jasmine
+velocity:html-reporter

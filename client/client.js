@@ -53,8 +53,9 @@ Template.create.events({
     },
     'submit .test-post': function(event){
         event.preventDefault();
-        var text = event.target.text.value;
-        Meteor.call('pay_User', text);
+        var text = event.target.userID.value;
+        var amount = Number(event.target.amount.value);
+        Meteor.call('pay_User', text, amount);
     }
 });
 

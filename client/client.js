@@ -31,8 +31,8 @@ Template.home.events({
           if (err) {
               throw new Meteor.Error("Logout failed");
           }
+          Router.go('/');
       });
-      Router.go('/')
   },
 
   'click #create': function(event) {

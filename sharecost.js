@@ -1,14 +1,15 @@
 /*
+===Purchase Schema===
 id: int
 title: “”
 description: “”
 creator: id
-members: {id: vote_status, …}
+members: [{id: int, vote_status: int}...] NOTE: vote status is -1 (no), 0 (undecided), or 1 (yes)
 cost: number
 created_at: number
 venmo_responses: { }
 */
-var Purchases = new Mongo.Collection("purchases");
+Purchases = new Mongo.Collection("purchases");
 Friends = new Mongo.Collection("friends");
 
 if (Meteor.isServer) {

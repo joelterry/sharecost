@@ -48,15 +48,7 @@ Template.home.helpers({
 });
 
 Template.create.events({
-    'click #pay-sandbox': function(event) {
-        ret = Meteor.call("pay_sandbox");
-    },
-    'submit .test-post': function(event){
-        event.preventDefault();
-        var text = event.target.userID.value;
-        var amount = Number(event.target.amount.value);
-        Meteor.call('pay_User', text, amount);
-    }
+    
 });
 
 

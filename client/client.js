@@ -53,15 +53,6 @@ Template.BaseLayout.events(events);
 Template.home.events(events);
 Template.create.events(events);
 
-Template.registerHelper('click #logout', function(event) {
-    Meteor.logout(function(err){
-        if (err) {
-            throw new Meteor.Error("Logout failed");
-        }
-        Router.go('/');
-    });
-});
-
 Template.registerHelper('getProfilePictureUrl', function() {
     var user = Meteor.user();
     return user.services.venmo.profile_picture_url

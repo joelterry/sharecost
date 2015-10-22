@@ -9,6 +9,7 @@ created_at: number
 venmo_responses: { }
 */
 var Purchases = new Mongo.Collection("purchases");
+Friends = new Mongo.Collection("friends");
 
 if (Meteor.isServer) {
   /* Server publishes all purchases with current user as a member */

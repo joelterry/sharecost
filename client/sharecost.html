@@ -1,55 +1,59 @@
 <head>
-  <title>ShareCost</title>
-  <meta name="description" content="ShareCost helps you split purchases between groups of people quickly and easily. Just log in with Venmo to start sharing.">
+	<title>ShareCost</title>
+	<meta name="description" content="ShareCost helps you split purchases between groups of people quickly and easily. Just log in with Venmo to start sharing.">
 </head>
 
 <template name="login">
-  <div class = "row text-center">
-	    <h1>Welcome!</h1>
-  </div>
-  <div class = "row text-center">
-	    {{#if currentUser}}
-	        You are logged in as {{currentUser.services.venmo.display_name}}
-	        <button id="logout">Logout</button>
-	    {{else}}
-	        <button id="venmo-login" class="btn btn-default">Login with Venmo</button>
-	    {{/if}}
-  </div>
+	<div class = "row text-center">
+		<h1>Welcome!</h1>
+	</div>
+	<div class = "row text-center">
+		{{#if currentUser}}
+			You are logged in as {{currentUser.services.venmo.display_name}}
+			<button id="logout">Logout</button>
+		{{else}}
+			<button id="venmo-login" class="btn btn-default">Login with Venmo</button>
+		{{/if}}
+	</div>
 </template>
 
 <template name='home'>
-  <div class = "row">
-    <div id = "center" class = "col-xs-8 center-block text-center home-content">
-  		{{#if currentUser}}
-  			<img src={{getProfilePictureUrl}} alt="text">
-  			<p>You are logged in!</p>
-  			<p><button id="logout" class="btn btn-default">Logout</button></p>
-        <p><button id="create" class="btn btn-default">Create a Proposal</button></p>
-
-        <ul>
-          {{#each purchases}}
-            {{> purchase_proposal}}
-          {{/each}}
+	<div class = "row">
+		<div id = "center" class = "col-xs-8 center-block text-center home-content">
+			{{#if currentUser}}
+				  <p>You are logged in!</p>
+			   <p><button id="create" class="btn btn-default">Create a Proposal</button></p>
+          <ul>
+            {{#each purchases}}
+              {{> purchase_proposal}}
+            {{/each}}
          </ul>
-  		{{else}}
-  			<h2>Waiting to log in</h2>
-  		{{/if}}
-    </div>
-  </div>
+			{{else}}
+				<h2>Waiting to log in</h2>
+			{{/if}}
+		</div>
+	</div>
 </template>
 
 <template name='create'>
-  <div class = "row text-center">
-    <h1>Create a Proposal</h1>
-  </div>
+	<div class = "row text-center">
+		<h1>Create a Proposal</h1>
+	</div>
 </template>
 
 <template name="BaseLayout">
-    <div class = "topbar"><h1>ShareCost</h1></div>
-    <div class = "topbar-ghost"></div>
-    <div class = "container">
-      {{> yield}}
-    </div>
+	<div class = "topbar">
+		<h1>ShareCost</h1>
+		{{#if currentUser}}
+			<button id="logout" class="btn btn-default topbar-logout right-align">Logout</button>
+			<img class = "topbar-pic right-align" src={{getProfilePictureUrl}} alt="text">
+		{{/if}}
+		<div id = "center"></div>
+	</div>
+	<div class = "topbar-ghost"></div>
+	<div class = "container">
+		{{> yield}}
+	</div>
 </template>
 
 <template name="createPurchase">

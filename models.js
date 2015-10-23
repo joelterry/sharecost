@@ -3,12 +3,17 @@
 id: int
 title: “”
 description: “”
-creator: id
-members: [{venmo_id: int, vote_status: int}...] NOTE: vote status is -1 (no), 0 (undecided), or 1 (yes)
+creator: venmo_id
+members: [venmo_id, ...] NOTE: must be at least 1 long
+accepted: [venmo_id, ...]
+rejected: [venmo_id, ...]
+paid: [venmo_id, ...]
 cost: number
 created_at: number
 venmo_responses: { }  NOTE: should we have this?
 */
+
+
 Purchases = new Mongo.Collection("purchases");
 Friends = new Mongo.Collection("friends");
 

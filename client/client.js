@@ -74,9 +74,11 @@ Template.create.events({
 		purch.title = event.target.title.value;
 		purch.description = event.target.description.value;
 		purch.cost = Number(event.target.cost.value);
-		purch.creator = Meteor.userId();
+		purch.creator = Meteor.user().services.venmo.id;
 		purch.members = Session.get("selectedFriends")
-			.map(function(elem){return {venmo_id: elem.id, vote_status: 0}});
+			.map(function(elem){return elem.id});
+		purch.approved = [];
+		purch.rejected = [];
 		purch.created_at = new Date();
 
 		Meteor.call("check_purchase", purch, function(err, res) {

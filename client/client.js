@@ -52,7 +52,7 @@ Template.create.onRendered(function() {
 	var friends = Friends.findOne(Meteor.userId()).venmo_friends;
 	var auto_friends = friends.map(function(elem) {
 		return {
-			/* We should be storing user id, not venmo id */
+			/* Venmo id, not app id */
 			'id': elem.id,
 			'label': elem.display_name,
 			'icon': elem.profile_picture_url
@@ -83,13 +83,19 @@ Template.create.events({
 		var purch = {};
 		purch.title = event.target.title.value;
 		purch.description = event.target.description.value;
-		purch.cost = event.target.cost.value;
+		purch.cost = Number(event.target.cost.value);
 		purch.creator = Meteor.userId();
 		purch.members = Session.get("selectedFriends")
-			.map(function(elem){return {id: elem.id, vote_status: 0}});
+			.map(function(elem){return {venmo_id: elem.id, vote_status: 0}});
 		purch.created_at = new Date();
 
-		Purchases.insert(purch);
+		Meteor.call("check_purchase", purch, function(err, res) {
+			if (res.length > 0) {
+				alert("ERROR:\n" + res.join("\n"));
+			} else {
+				Purchases.insert(purch);
+			}
+		});
 	},
 	'click .delete-friend': function(event) {
 		var id = $(event.target).parents("li").attr("id");

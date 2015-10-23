@@ -32,7 +32,6 @@ Meteor.methods({
 			}
 		});
 	},
-
 	'venmoPaySandbox': function(accessToken){
 		this.unblock();
 		var user = Meteor.user();

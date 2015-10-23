@@ -107,6 +107,12 @@ Template.create.helpers({
   }
 });
 
+Template.purchase_proposal.events({
+	'yesVote': function() {
+		console.log(this);
+	}
+});
+
 var events = {
   'click #logout': function(event) {
     Meteor.logout(function(err){

@@ -23,7 +23,7 @@
 			{{#if currentUser}}
 				  <p>You are logged in!</p>
 			   <p><button id="create" class="btn btn-default">Create a Proposal</button></p>
-          <ul>
+          <ul class="purchases">
             {{#each purchases}}
               {{> purchase_proposal}}
             {{/each}}
@@ -69,6 +69,10 @@
 </template>
 
 <template name="purchase_proposal">
-  <div class="title">{{creator}} - {{title}} - {{description}}</div>
+  <div id={{_id}}></div>
+  <div class="title">{{creator}} - {{title}} - {{description}}
+      <button id="yesVote">Accept</button>
+      <button id="noVote">Deny</button>
+  </div>
 </template>
 

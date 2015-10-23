@@ -30,11 +30,11 @@ if (Meteor.isServer){
 				if (err) {
 					throw new Meteor.Error("Unable to retrieve Venmo friends.");
 				}
-				Meteor.users.update(Meteor.userId(), {$set: {'venmo_friends': res}});
+				Friends.upsert(Meteor.userId(), {$set: {'venmo_friends': res}});
 			});
 		},
 
-		'pay_User': function(userId, amount){
+		'pay_user': function(userId, amount){
 			var user = Meteor.user();
 			if (!user) {
 				throw new Meteor.Error("Couldn't retrieve Venmo friends; user is not logged in.");
@@ -73,6 +73,7 @@ if (Meteor.isServer){
 										return result;
 									}
 								});
+
 		}
 
 	});

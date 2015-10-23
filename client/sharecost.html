@@ -22,23 +22,22 @@
 		<div id = "center" class = "col-xs-8 center-block text-center home-content">
 			{{#if currentUser}}
 				<p>You are logged in!</p>
-			<p><button id="create" class="btn btn-default">Create a Proposal</button></p>
+				<p><button id="create" class="btn btn-default">Create a Proposal</button></p>
+				<ul>
+					{{#each purchases}}
+						{{> purchase_proposal}}
+					{{/each}}
+				</ul>
 			{{else}}
-				<h2>Waiting to log in</h2>
+				<h2>Waiting to log in...</h2>
 			{{/if}}
 		</div>
 	</div>
 </template>
 
-<template name='create'>
-	<div class = "row text-center">
-		<h1>Create a Proposal</h1>
-	</div>
-</template>
-
 <template name="BaseLayout">
 	<div class = "topbar">
-		<h1>ShareCost</h1>
+		<a href="/">ShareCost</a>
 		{{#if currentUser}}
 			<button id="logout" class="btn btn-default topbar-logout right-align">Logout</button>
 			<img class = "topbar-pic right-align" src={{getProfilePictureUrl}} alt="text">
@@ -51,13 +50,47 @@
 	</div>
 </template>
 
-<template name="createPurchase">
-	<form class="new-purchase">
-		<input type="text" name="title" placeholder="Title">
-		<textarea name="description">Description</textarea>
-		<input type="text" name="cost" placeholder="Cost">
-		<ul></ul>
-		<select name="friends">
-		</select>
-	</form>
+<template name="create">
+	<div class = "row text-center">
+		<h2>Create a Proposal</h2>
+	</div>
+	<div class = "row">
+		<div id = "center" class = "proposal-form col-xs-10 center-block">
+			<form class="new-purchase form-horizontal" role = "form">
+				<div class="form-group">
+				    <label class = "control-label" for="title">Title:</label>
+				    <input type="text" name = "title" class="form-control" id="title">
+				</div>
+				<div class="form-group">
+				    <label class = "control-label" for="description">Description:</label>
+				    <textarea name = "description" class="form-control" id="description"></textarea>
+				</div>
+				<div class="form-group">
+				    <label class = "control-label" for="cost">Total Cost:</label>
+				    <input type="text" name = "cost" class="cost-input form-control" id="cost">
+				</div>
+				<div class = "form-group">
+					<ul id="selected-friends">
+						{{#each selectedFriends}}
+							<li id="{{id}}" class = "added-friend">
+								<span>{{label}}</span>
+								<button type="button" class="delete-friend btn btn-default">Remove</button> </li>
+								<div id="center"></div>
+						{{/each}}
+					</ul>
+				</div>
+				<div class = "form-group select-friends">
+					<label class = "control-label" for="friends-autocomplete">Add Friends:</label>
+					<input type="text" class = "form-control" name="friends" id="friends-autocomplete">
+				</div>
+				<a href="/" class="cancel btn btn-default">Cancel</a>
+				<input class = "btn btn-default" type="submit" value="Submit">
+			</form>
+		</div>
+	</div>
 </template>
+
+<template name="purchase_proposal">
+	<div class="title">{{creator}} - {{title}} - {{description}}</div>
+</template>
+

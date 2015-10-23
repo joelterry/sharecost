@@ -33,10 +33,6 @@ Template.home.helpers({
     }
 });
 
-Template.create.events({
-    
-});
-
 Template.create.onRendered(function() {
 	Session.set("selectedFriends", []);
 	var friends = Friends.findOne(Meteor.userId()).venmo_friends;
@@ -67,17 +63,27 @@ Template.create.onRendered(function() {
 
 
 Template.create.events({
+	/* Purchase creation via form submission */
 	'submit': function(event) {
 		event.preventDefault();
 
+		var selected = Session.get("selectedFriends");
 		var purch = {};
 		purch.title = event.target.title.value;
 		purch.description = event.target.description.value;
 		purch.cost = Number(event.target.cost.value);
-		purch.creator = Meteor.userId();
-		purch.members = Session.get("selectedFriends")
-			.map(function(elem){return {venmo_id: elem.id, vote_status: 0}});
+		purch.creator = Meteor.user().services.venmo.id;
+		purch.members = selected.map(function(elem){return elem.id});
+		purch.accepted = [];
+		purch.rejected = [];
 		purch.created_at = new Date();
+
+		var member_names = {};
+		selected.forEach(function(elem){
+			member_names[elem.id] = elem.label;
+		});
+		member_names[purch.creator] = Meteor.user().services.venmo.display_name;
+		purch.member_names = member_names;
 
 		Meteor.call("check_purchase", purch, function(err, res) {
 			if (res.length > 0) {
@@ -105,6 +111,65 @@ Template.create.helpers({
   'selectedFriends': function() {
     return Session.get("selectedFriends");
   }
+});
+
+
+Template.purchaseProposal.helpers({
+	'creatorName': function() {
+		var purch = Template.instance().data;
+		return purch.member_names[purch.creator];
+	},
+	/* Returns true if the creator of this purchase is logged in. */
+	'isCreator': function() {
+		var purch = Template.instance().data;
+		return purch.creator == Meteor.user().services.venmo.id;
+	},
+	'accepted': function() {
+		var purch = Template.instance().data;
+		return purch.accepted.map(function(elem){
+			return purch.member_names[elem];
+		});
+	},
+	'rejected': function() {
+		var purch = Template.instance().data;
+		return purch.rejected.map(function(elem){
+			return purch.member_names[elem];
+		});
+	},
+	'pending': function() {
+		var purch = Template.instance().data;
+		var a = purch.accepted;
+		var r = purch.rejected;
+		var pending = [];
+		/* Disgusting rendition of a set difference */
+		purch.members.forEach(function(member) {
+			if (a.indexOf(member) == -1 && r.indexOf(member) == -1) {
+				pending.push(member);
+			}
+		});
+		return pending.map(function(elem){
+			return purch.member_names[elem];
+		});
+	}
+});
+
+Template.purchaseProposal.events({
+	'click #accept-butt': function(event) {
+		var purch_id = Template.instance().data._id;
+		Meteor.call("accept_purchase", purch_id, function(err, res) {
+			if (err) {
+				console.log(err);
+			}
+		});
+	},
+	'click #reject-butt': function(event) {
+		var purch_id = Template.instance().data._id;
+		Meteor.call("reject_purchase", purch_id, function(err, res) {
+			if (err) {
+				console.log(err);
+			}
+		});
+	}
 });
 
 var events = {

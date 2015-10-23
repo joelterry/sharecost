@@ -35,12 +35,6 @@
 	</div>
 </template>
 
-<template name='create'>
-	<div class = "row text-center">
-		<h1>Create a Proposal</h1>
-	</div>
-</template>
-
 <template name="BaseLayout">
 	<div class = "topbar">
 		<h1>ShareCost</h1>
@@ -56,19 +50,25 @@
 	</div>
 </template>
 
-<template name="createPurchase">
-	<form class="new-purchase">
-		<input type="text" name="title" placeholder="Title">
-		<textarea name="description">Description</textarea>
-		<input type="text" name="cost" placeholder="Cost">
-		<ul></ul>
-		<select name="friends">
-		</select>
-	</form>
+<template name="create">
+	<div class = "row text-center">
+		<h1>Create a Proposal</h1>
+		<form class="new-purchase">
+			<input type="text" name="title" placeholder="Title">
+			<textarea name="description">Description</textarea>
+			<input type="text" name="cost" placeholder="Cost">
+			<ul id="selected-friends">
+				{{#each selectedFriends}}
+					<li id="{{id}}"> <span>{{label}}</span> <button type="button" class="delete-friend">X</button> </li>
+				{{/each}}
+			</ul>
+			<input type="text" name="friends" id="friends-autocomplete">
+			<input type="submit" value="Submit">
+		</form>
+	</div>
 </template>
 
 <template name="purchase_proposal">
   <div class="title">{{creator}} - {{title}} - {{description}}</div>
 </template>
-
 

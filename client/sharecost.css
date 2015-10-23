@@ -10,15 +10,18 @@
 	background-color: #29857C;
 	height: 51px;
 }
-.topbar h1 {
+.topbar a {
 	color: white;
 	font-size: 36px;
 	margin: 0;
-	padding-top: 5px;
 	width: 200px;
 	position: absolute;
 	top: 0;
 	left: calc(50% - 100px);
+	text-decoration: none;
+}
+.topbar a:hover {
+	text-decoration: none;
 }
 .topbar-ghost {
 	height: 51px;
@@ -42,4 +45,24 @@
 }
 #dumbfix {
 	margin-left: -15px;
+}
+
+.proposal-form {
+	max-width: 720px;
+}
+.cost-input {
+	width: 30%;
+}
+.added-friend {
+	width: 40%;
+	line-height: 250%;
+}
+.delete-friend {
+	float: right;
+}
+.cancel {
+	margin-right: 10%;
+}
+.select-friends {
+	margin-bottom: 30px;
 }

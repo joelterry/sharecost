@@ -7,6 +7,7 @@ creator: venmo_id
 members: [venmo_id, ...] NOTE: must be at least 1 long
 accepted: [venmo_id, ...]
 rejected: [venmo_id, ...]
+member_names: {venmo_id: name, ...} NOTE: for display purposes
 paid: [venmo_id, ...]
 cost: number
 created_at: number

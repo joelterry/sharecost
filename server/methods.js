@@ -9,6 +9,22 @@ if (Meteor.isServer){
 		return Number((Math.floor((total * 100) / n) / 100).toFixed(2));
 	}
 
+	/* Checks if the user with 'venmo_id' can vote on 'purchase.' */
+	var valid_vote = function(venmo_id, purchase) {
+		/* Checking membership */
+		if (purchase.members.indexOf(venmo_id) == -1) {
+			throw new Meteor.Error("Error, attempt to vote on a purchase that doesn't involve the logged-in user.");
+		}
+		/* Checking that user hasn't already accepted purchase. */
+		if (purchase.accepted.indexOf(venmo_id) != -1) {
+			throw new Meteor.Error("Error, attempt to vote on a purchase that the user already accepted.");
+		}
+		/* Checking that user hasn't already rejected purchase. */
+		if (purchase.rejected.indexOf(venmo_id) != -1) {
+			throw new Meteor.Error("Error, attempt to vote on a purchase that the user already rejected.");
+		}
+	}
+
 	Meteor.methods({
 		/* Retrieves the current user's venmo friends. Currently only makes one GET request
 		 * for a maximum of 2000 friends. We might need to account for pagination. */
@@ -88,8 +104,18 @@ if (Meteor.isServer){
 			} else {
 				throw new Meteor.Error("Error, Venmo failed to process the purchase.");
 			}
-			
-
+		},
+		'accept_purchase': function(purchase_id) {
+			var purchase = Purchases.findOne(purchase_id);
+			var venmo_id = Meteor.user().services.venmo.id;
+			valid_vote(venmo_id, purchase);
+			Purchases.update(purchase_id, {$push: {accepted: venmo_id}});
+		},
+		'reject_purchase': function(purchase_id) {
+			var purchase = Purchases.findOne(purchase_id);
+			var venmo_id = Meteor.user().services.venmo.id;
+			valid_vote(venmo_id, purchase);
+			Purchases.update(purchase_id, {$push: {rejected: venmo_id}});
 		},
 		'pay_sandbox': function(){
 			var user = Meteor.user();

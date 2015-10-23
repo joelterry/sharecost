@@ -23,7 +23,6 @@ Template.home.events({
   }
 });
 
-<<<<<<< HEAD
 Template.home.helpers({
     'getProfilePictureUrl': function() {
         var user = Meteor.user();
@@ -34,8 +33,6 @@ Template.home.helpers({
     }
 });
 
-=======
->>>>>>> master
 Template.create.events({
     
 });

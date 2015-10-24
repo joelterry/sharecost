@@ -50,6 +50,9 @@
 
 .proposal-form {
 	max-width: 720px;
+	background-color: #EDEAFA;
+	padding: 30px;
+	border-radius: 4px;
 }
 .cost-input {
 	width: 30%;

@@ -67,3 +67,24 @@
 .select-friends {
 	margin-bottom: 30px;
 }
+
+.proposal {
+	margin-top: 30px;
+	background-color: #EDEAFA;
+	padding: 30px;
+	border-radius: 4px;
+}
+.proposal p {
+	margin: 0;
+	padding-bottom: 0;
+}
+.purchase-list {
+	padding: 0;
+}
+#accept-butt {
+	margin: auto;
+}
+#reject-butt {
+	margin: auto;
+	margin-top: 20px;
+}

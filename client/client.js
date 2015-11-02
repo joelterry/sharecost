@@ -153,6 +153,9 @@ Template.purchaseProposal.helpers({
 		return pending.map(function(elem){
 			return purch.member_names[elem];
 		});
+	},
+	'getPurchaseRoute': function() {
+		return "/purchase/" + this._id;
 	}
 });
 

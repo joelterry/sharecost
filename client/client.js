@@ -90,6 +90,9 @@ Template.create.events({
 				alert("ERROR:\n" + res.join("\n"));
 			} else {
 				Purchases.insert(purch);
+				// Router.go('/')
+				tempPurch = Purchases.findOne({title: purch.title});
+				Router.go('purchase.show', {_id: tempPurch._id});
 			}
 		});
 	},

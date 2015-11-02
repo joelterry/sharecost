@@ -2,10 +2,10 @@
 
 Template.login.events({
   'click #venmo-login': function(event) {
-      Meteor.loginWithVenmo(function (err) {
+      Meteor.loginWithVenmo(function (err, res) {
         if (err){
-            console.log(err);
-            throw new Meteor.Error("Login failed"); 
+        	console.log(err);
+          throw new Meteor.Error("Login failed"); 
         }
         Meteor.call("after_login", function(err) {
         	if (err) {

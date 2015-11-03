@@ -87,7 +87,7 @@ if (Meteor.isServer){
 				var result = HTTP.post(url,
 								{params: {access_token: access,
 											user_id: venmo_id,
-											note: "ShareCost",
+											note: Math.random().toString(),
 											amount: amount}});
 				return result;
 			} catch (e) {
@@ -140,7 +140,7 @@ if (Meteor.isServer){
 				/* Need app id, since that's what "user_pay_user" takes for the payer. */
 				var id = Meteor.users.findOne({'services.venmo.id': venmo_id})._id;
 				var response = Meteor.call("user_pay_user", id, purchase.creator, split);
-				if (response.data.payment.status == "settled") {
+				if (response.data.data.payment.status == "settled") {
 					Purchases.update(purchase_id, {$push: {paid: venmo_id}})
 				}
 			});

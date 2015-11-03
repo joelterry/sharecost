@@ -24,5 +24,11 @@ Router.route('/', function () {
   } else {
   	this.redirect('/login');
   }
+});
 
+Router.route('/purchase/:_id', function () {
+  var purchase = Purchases.findOne({_id: this.params._id});
+  this.render('ShowPurchase', {data: purchase});
+}, {
+  name: 'purchase.show'
 });

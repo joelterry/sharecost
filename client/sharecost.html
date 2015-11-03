@@ -99,7 +99,7 @@
 
 <template name="purchaseProposal">
 	<div class = "row proposal">
-		<div class = "col-xs-3"><h3>{{title}}</h3></div>
+		<div class = "col-xs-3"><h3><a href={{getPurchaseRoute}}> {{title}}</a></h3></div>
 		<div class = "col-xs-6">
 			<p>Cost: {{cost}}</p>
 			<p>Created by: {{creatorName}}</p>
@@ -138,3 +138,11 @@
 	</div>
 </template>
 
+<template name="ShowPurchase">
+	<ul>
+		<li>{{title}}</li>
+		<li>{{description}}</li>
+		<li>{{cost}}</li>
+		<li>{{creator}}</li>
+	</ul>
+</template>

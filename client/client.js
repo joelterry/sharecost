@@ -122,6 +122,7 @@ Template.create.events({
 				}
 				/* Add the purchase ID to the creator's list of created purchases */
 				Meteor.call("own_purchase", pid);
+				Router.go('purchase.show', {_id: pid});
 			}
 		});
 	},
@@ -182,6 +183,9 @@ Template.purchaseProposal.helpers({
 		return pending.map(function(elem){
 			return purch.member_names[elem];
 		});
+	},
+	'getPurchaseRoute': function() {
+		return "/purchase/" + this._id;
 	}
 });
 

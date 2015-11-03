@@ -23,8 +23,15 @@
 			{{#if currentUser}}
 				<p>You are logged in!</p>
 				<p><button id="create" class="btn btn-default">Create a Proposal</button></p>
+				<h3>Your purchase proposals...</h3>
 				<ul class = "purchase-list">
-					{{#each purchases}}
+					{{#each createdPurchases}}
+						{{> purchaseProposal}}
+					{{/each}}
+				</ul>
+				<h3>Other purchase proposals...</h3>
+				<ul class = "purchase-list">
+					{{#each invitedPurchases}}
 						{{> purchaseProposal}}
 					{{/each}}
 				</ul>

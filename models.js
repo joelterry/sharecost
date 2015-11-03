@@ -1,4 +1,9 @@
 /*
+===User Schema=== (this is a default Meteor Collection, fields specified here are added by the developers)
+purchases: {created: [], invited: []}
+
+
+
 ===Purchase Schema===
 id: int
 title: “”
@@ -23,6 +28,16 @@ if (Meteor.isServer) {
   Meteor.publish("purchases", function() {
     return Purchases.find({members: { $all : [this.userId] }});
   });
+
+  Meteor.publish("userData", function () {
+    if (this.userId) {
+      return Meteor.users.find({_id: this.userId},
+                               {fields: {'purchases': 1}});
+    } else {
+      this.ready();
+    }
+  });
+
 
 
   /* Helper for validating strings. min and max are inclusive.
@@ -74,4 +89,5 @@ if (Meteor.isServer) {
 if (Meteor.isClient) {
   /* Server publishes all purchases with current user as a member */
   Meteor.subscribe("purchases");
+  Meteor.subscribe("userData");
 }

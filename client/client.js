@@ -28,8 +28,27 @@ Template.home.helpers({
         var user = Meteor.user();
         return user.services.venmo.profile_picture_url
     },
-    'purchases': function(){
-        return Purchases.find({});
+    'createdPurchases': function(){
+    	var user = Meteor.user();
+    	/* Need to check that purchases has been published */
+    	if (user.purchases) {
+			var ids = user.purchases.created;
+        	return Purchases.find({_id: {$in: ids}});
+    	} else {
+    		return null;
+    	}
+    	
+    },
+    'invitedPurchases': function(){
+    	var user = Meteor.user();
+    	/* Need to check that purchases has been published */
+    	if (user.purchases) {
+    		var ids = user.purchases.invited;
+    		return Purchases.find({_id: {$in: ids}});
+    	} else {
+    		return null;
+    	}
+        
     }
 });
 
@@ -76,6 +95,7 @@ Template.create.events({
 		purch.members = selected.map(function(elem){return elem.id});
 		purch.accepted = [];
 		purch.rejected = [];
+		purch.paid = [];
 		purch.created_at = new Date();
 
 		var member_names = {};
@@ -89,10 +109,20 @@ Template.create.events({
 			if (res.length > 0) {
 				alert("ERROR:\n" + res.join("\n"));
 			} else {
-				Purchases.insert(purch);
-				// Router.go('/')
-				tempPurch = Purchases.findOne({title: purch.title});
-				Router.go('purchase.show', {_id: tempPurch._id});
+				/* Add the purchase to the Purchases collection */
+				var pid = Purchases.insert(purch);
+				/* Add the purchase ID to the creator's list of invited members.
+				 * If an invited venmo member isn't a member of ShareCost, then
+				 * abort, and remove the purchase. */
+				try {
+					Meteor.call("send_purchase", pid, purch.members);
+				} catch (e) {
+					Purchases.remove(pid);
+					alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
+				}
+				/* Add the purchase ID to the creator's list of created purchases */
+				Meteor.call("own_purchase", pid);
+				Router.go('purchase.show', {_id: pid});
 			}
 		});
 	},

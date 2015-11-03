@@ -146,32 +146,6 @@ if (Meteor.isServer){
 			});
 
 		},
-		/* Called when a purchase that the current user is a member of has been unanimously approved.
-		 * Either triggers upon login, or at the moment of approval (if member is logged in).
-		 *
-		 * NOTE: This hasn't been used yet. I'm not sure if purchases should be processed
-		 * once as a group, or individually when invited members are logged in. If it's the
-		 * former, then process_group_purchase() should be used instead.  */
-		'process_purchase': function(purchase_id) {
-			var purchase = Purchases.findOne(purchase_id);
-			var venmo_id = Meteor.user().services.venmo.id;
-
-			valid_purchase(purchase);
-			/* Checking membership */
-			if (purchase.members.indexOf(venmo_id) == -1) {
-				throw new Meteor.Error("Error, attempt to process a purchase that doesn't involve the logged-in user.");
-			}
-			/* Splitting cost */
-			var split = split_cost(purchase.cost, purchase.members.length + 1);
-			/* Attempting to make Venmo transaction to creator of purchase */
-			var response = Meteor.call('pay_user', purchase.creator, split);
-			/* If the Venmo transaction went through, add user to the list of users who have paid (purchase.paid) */
-			if (response.data.payment.status == "settled") {
-				Purchases.update(purchase_id, {$push: {paid: venmo_id}});
-			} else {
-				throw new Meteor.Error("Error, Venmo failed to process the purchase.");
-			}
-		},
 		'accept_purchase': function(purchase_id) {
 			var purchase = Purchases.findOne(purchase_id);
 			var venmo_id = Meteor.user().services.venmo.id;

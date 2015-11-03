@@ -210,7 +210,7 @@ Template.purchaseProposal.events({
 
 Template.ShowPurchase.helpers({
 	'getCreatorName': function () {
-		var creator = Meteor.users.findOne(this.creator);
+		var creator = Meteor.users.findOne({'services.venmo.id': this.creator});
 		return creator.profile.name;
 	}
 });

@@ -143,9 +143,13 @@
 		<div id = "center" class = "proposal-form col-xs-10 center-block">
 			<h2 class="text-center">{{title}}</h2>
 			<div>Creator: {{getCreatorName}}</div>
-			<div>{{description}}</div>
-			<div>{{cost}}</div>
-			<div>{{creator}}</div>
+			<div>Description: {{description}}</div>
+			<div>Cost: {{cost}}</div>
+			<div>
+				{{#each members}}
+					{{.}}
+				{{/each}}
+			</div>
 			<a href="/" class="cancel btn btn-default">Cancel</a>
 			<input class = "btn btn-default" type="submit" value="Submit">
 		</div>

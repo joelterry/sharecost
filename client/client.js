@@ -180,21 +180,17 @@ Template.purchaseProposal.events({
 
 Template.ShowPurchase.onRendered(function(){
 	Session.set('currentPurchaseID', this._id);
-	console.log(Template.instance().data._id);
 });
 
 Template.ShowPurchase.helpers({
 	'populateMessages': function(){
 		return Messages.find(Session.get('currentPurchaseID'));
-	},
-	'returnID': function(){
-		return Template.instance().data._id;
 	}
 });
 
 Template.ShowPurchase.events({
 	/* Message creation via form submission */
-	'submit #messageSubmit': function(event) {
+	'click #messageSubmit': function(event) {
 		event.preventDefault();
 
 		var message = {};

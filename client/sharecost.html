@@ -138,10 +138,9 @@
 		<li>{{cost}}</li>
 		<li>{{creator}}</li>
 	</ul>
-	<div><button id="create-message">Create Message</button></div>
-</template>
-
-<template name="createMessage">
+	{{#each populateMessages}}
+		<div class="message">{{title}}: {{message}}</div>
+	{{/each}}
 	<form class="new-message form-horizontal" role = "form">
 		<div class="form-group">
 		    <label class = "control-label" for="messageTitle">Message Title:</label>

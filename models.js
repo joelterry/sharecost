@@ -77,6 +77,14 @@ if (Meteor.isServer) {
       }
 
       return errors;
+    },
+    'check_message': function(message){
+      var TITLE_MIN = 1;
+      var TITLE_MAX = 64;
+      var DESC_MIN = 0;
+      var DESC_MAX = 256;
+
+      
     }
   });
 

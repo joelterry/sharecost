@@ -178,22 +178,33 @@ Template.purchaseProposal.events({
 	}
 });
 
-Template.createMessage.events({
+Template.ShowPurchase.onRendered(function(){
+	Session.set('currentPurchaseID', this._id);
+	console.log(Template.instance().data._id);
+});
+
+Template.ShowPurchase.helpers({
+	'populateMessages': function(){
+		return Messages.find(Session.get('currentPurchaseID'));
+	},
+	'returnID': function(){
+		return Template.instance().data._id;
+	}
+});
+
+Template.ShowPurchase.events({
 	/* Message creation via form submission */
 	'submit #messageSubmit': function(event) {
 		event.preventDefault();
 
 		var message = {};
-		message.purchase_id = 1;
+		message.purchase_id = Session.get('currentPurchaseID');
 		message.title = event.target.messageTitle.value;
 		message.message = event.target.message.value;
 		message.creator = Meteor.user().services.venmo.id;
 		message.created_at = new Date();
 
 		Messages.insert(message);
-		//Router.go('/')
-		tempPurch = Purchases.findOne({_id: message.purchase_id});
-		Router.go('purchase.show', {_id: tempPurch._id});
 	}
 });
 

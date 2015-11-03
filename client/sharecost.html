@@ -132,10 +132,15 @@
 </template>
 
 <template name="ShowPurchase">
-	<ul>
-		<li>{{title}}</li>
-		<li>{{description}}</li>
-		<li>{{cost}}</li>
-		<li>{{creator}}</li>
-	</ul>
+	<div class = "row">
+		<div id = "center" class = "proposal-form col-xs-10 center-block">
+			<h2 class="text-center">{{title}}</h2>
+			<div>Creator: {{getCreatorName}}</div>
+			<div>{{description}}</div>
+			<div>{{cost}}</div>
+			<div>{{creator}}</div>
+			<a href="/" class="cancel btn btn-default">Cancel</a>
+			<input class = "btn btn-default" type="submit" value="Submit">
+		</div>
+	</div>
 </template>

@@ -178,6 +178,13 @@ Template.purchaseProposal.events({
 	}
 });
 
+Template.ShowPurchase.helpers({
+	'getCreatorName': function () {
+		var creator = Meteor.users.findOne(this.creator);
+		return creator.profile.name;
+	}
+});
+
 var events = {
   'click #logout': function(event) {
     Meteor.logout(function(err){

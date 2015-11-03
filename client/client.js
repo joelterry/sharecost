@@ -190,7 +190,7 @@ Template.ShowPurchase.helpers({
 
 Template.ShowPurchase.events({
 	/* Message creation via form submission */
-	'submit': function(event) {
+	'submit .submit-message': function(event) {
 		event.preventDefault();
 
 		var message = {};

@@ -1,6 +1,6 @@
 /*
 ===Purchase Schema===
-id: int
+_id: int
 title: “”
 description: “”
 creator: venmo_id
@@ -14,9 +14,20 @@ created_at: number
 venmo_responses: { }  NOTE: should we have this?
 */
 
+/*
+===Messages Schema===
+_id: int
+purchase_id: id (_id of unique Purchase field)
+creator: ""
+title: ""
+message: ""
+created_at: number
+*/
+
 
 Purchases = new Mongo.Collection("purchases");
 Friends = new Mongo.Collection("friends");
+Messages = new Mongo.Collection("messages");
 
 if (Meteor.isServer) {
   /* Server publishes all purchases with current user as a member */

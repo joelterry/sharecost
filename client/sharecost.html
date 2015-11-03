@@ -141,6 +141,18 @@
 	<div><button id="create-message">Create Message</button></div>
 </template>
 
-<template name="CreateMessage">
-
+<template name="createMessage">
+	<form class="new-message form-horizontal" role = "form">
+		<div class="form-group">
+		    <label class = "control-label" for="messageTitle">Message Title:</label>
+		    <input type="text" name = "messageTitle" class="form-control" id="messagetitle">
+		</div>
+		<div class="form-group">
+		    <label class = "control-label" for="description">Message:</label>
+		    <input type="text" name = "message" class="form-control" id="message">
+		</div>
+		
+<!-- 		<a href="/" class="cancel btn btn-default">Cancel</a>
+ -->	<input class = "btn btn-default" type="submit" value="Submit" id="messageSubmit">
+	</form>
 </template>

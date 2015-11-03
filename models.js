@@ -34,6 +34,10 @@ if (Meteor.isServer) {
   Meteor.publish("purchases", function() {
     return Purchases.find({members: { $all : [this.userId] }});
   });
+  //Server publishes all messages
+  Meteor.publish("messages", function(){
+    return Messages.find();
+  });
 
 
   /* Helper for validating strings. min and max are inclusive.
@@ -84,7 +88,7 @@ if (Meteor.isServer) {
       var DESC_MIN = 0;
       var DESC_MAX = 256;
 
-      
+
     }
   });
 
@@ -93,4 +97,5 @@ if (Meteor.isServer) {
 if (Meteor.isClient) {
   /* Server publishes all purchases with current user as a member */
   Meteor.subscribe("purchases");
+  Meteor.subscribe("messages");
 }

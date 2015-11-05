@@ -19,15 +19,26 @@
 
 <template name='home'>
 	<div class = "row">
-		<div id = "center" class = "col-xs-8 center-block text-center home-content">
+		<div id = "center" class = "col-xs-10 center-block text-center home-content">
 			{{#if currentUser}}
-				<p>You are logged in!</p>
 				<p><button id="create" class="btn btn-default">Create a Proposal</button></p>
-				<ul class = "purchase-list">
-					{{#each purchases}}
-						{{> purchaseProposal}}
-					{{/each}}
-				</ul>
+				<div class = "col-xs-5">
+					<h3>Your purchase proposals...</h3>
+					<ul class = "purchase-list">
+						{{#each createdPurchases}}
+							{{> purchaseProposal}}
+						{{/each}}
+					</ul>
+				</div>
+				<div class = "col-xs-2"></div>
+				<div class ="col-xs-5">
+					<h3>Other purchase proposals...</h3>
+					<ul class = "purchase-list">
+						{{#each invitedPurchases}}
+							{{> purchaseProposal}}
+						{{/each}}
+					</ul>
+				</div>
 			{{else}}
 				<h2>Waiting to log in...</h2>
 			{{/if}}
@@ -92,15 +103,14 @@
 
 <template name="purchaseProposal">
 	<div class = "row proposal">
-		<div class = "col-xs-3"><h3><a href={{getPurchaseRoute}}> {{title}}</a></h3></div>
-		<div class = "col-xs-6">
-			<p>Cost: {{cost}}</p>
-			<p>Created by: {{creatorName}}</p>
+		<div class = "row"><h3><a href={{getPurchaseRoute}}>{{title}}</a> - ${{cost}}</h3></div>
+		<div class = "col-xs-9 left-align">
+			<p>Created by: {{getCreatorName}}</p>
 			<p>{{description}}</p>
 			<div>
 				<p>Accepted:</p>
 				<ul>
-					{{#each accepted}}
+					{{#each getAcceptedNames}}
 						<li>{{.}}</li>
 					{{/each}}
 				</ul>
@@ -108,7 +118,7 @@
 			<div>
 				<p>Rejected:</p>
 				<ul>
-					{{#each rejected}}
+					{{#each getRejectedNames}}
 						<li>{{.}}</li>
 					{{/each}}
 				</ul>
@@ -116,7 +126,7 @@
 			<div>
 				<p>Pending:</p>
 				<ul>
-					{{#each pending}}
+					{{#each getPendingNames}}
 						<li>{{.}}</li>
 					{{/each}}
 				</ul>
@@ -132,10 +142,45 @@
 </template>
 
 <template name="ShowPurchase">
-	<ul>
-		<li>{{title}}</li>
-		<li>{{description}}</li>
-		<li>{{cost}}</li>
-		<li>{{creator}}</li>
-	</ul>
+	<div class = "row purchase-page">
+		<div id = "center" class = "proposal-form col-xs-10 center-block">
+			<h2 class="text-center">{{title}} - ${{cost}}</h2>
+			<div class = "row">
+				<div class = "col-xs-9">
+					<p>Created by: {{getCreatorName}}</p>
+					<p>{{description}}</p>
+					<div>
+						<p>Accepted:</p>
+						<ul>
+							{{#each getAcceptedNames}}
+								<li>{{.}}</li>
+							{{/each}}
+						</ul>
+					</div>
+					<div>
+						<p>Rejected:</p>
+						<ul>
+							{{#each getRejectedNames}}
+								<li>{{.}}</li>
+							{{/each}}
+						</ul>
+					</div>
+					<div>
+						<p>Pending:</p>
+						<ul>
+							{{#each getPendingNames}}
+								<li>{{.}}</li>
+							{{/each}}
+						</ul>
+					</div>
+				</div>
+				<div class = "accept-reject col-xs-3">
+					{{#unless isCreator}}
+						<div><button id="accept-butt" class = "btn btn-default">Accept</button></div>
+						<div><button id="reject-butt" class = "btn btn-default">Reject</button></div>
+					{{/unless}}
+				</div>
+			</div>
+		</div>
+	</div>
 </template>

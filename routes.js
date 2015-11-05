@@ -28,7 +28,7 @@ Router.route('/', function () {
 
 Router.route('/purchase/:_id', function () {
   var purchase = Purchases.findOne({_id: this.params._id});
-  this.render('ShowPurchase', {data: purchase});
-}, {
-  name: 'purchase.show'
+    this.render('ShowPurchase', {data: purchase});
+  }, {
+    name: 'purchase.show'
 });

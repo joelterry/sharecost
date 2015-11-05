@@ -1,36 +1,49 @@
 /* General client code */
 
 Template.login.events({
-  'click #venmo-login': function(event) {
-      Meteor.loginWithVenmo(function (err, res) {
-        if (err){
-        	console.log(err);
-          throw new Meteor.Error("Login failed"); 
-        }
-        Meteor.call("after_login", function(err) {
-        	if (err) {
-        		throw new Meteor.Error("Unable to update friends.");
-        	}
-        });
-        Router.go('/');
-      });
-  }
+	'click #venmo-login': function(event) {
+		Meteor.loginWithVenmo(function (err, res) {
+			if (err){
+				console.log(err);
+				throw new Meteor.Error("Login failed"); 
+			}
+			Meteor.call("after_login", function(err) {
+				if (err) {
+					throw new Meteor.Error("Unable to update friends.");
+				}
+			});
+			Router.go('/');
+		});
+	}
 });
 
 Template.home.events({
-  'click #create': function(event) {
-      Router.go('/create');
-  }
+	'click #create': function(event) {
+		Router.go('/create');
+	}
 });
 
 Template.home.helpers({
-    'getProfilePictureUrl': function() {
-        var user = Meteor.user();
-        return user.services.venmo.profile_picture_url
-    },
-    'purchases': function(){
-        return Purchases.find({});
-    }
+	'createdPurchases': function(){
+		var user = Meteor.user();
+		/* Need to check that purchases has been published */
+		if (user.purchases) {
+			var ids = user.purchases.created;
+			return Purchases.find({_id: {$in: ids}});
+		} else {
+			return null;
+		}
+	},
+	'invitedPurchases': function(){
+		var user = Meteor.user();
+		/* Need to check that purchases has been published */
+		if (user.purchases) {
+			var ids = user.purchases.invited;
+			return Purchases.find({_id: {$in: ids}});
+		} else {
+			return null;
+		}
+	}
 });
 
 Template.create.onRendered(function() {
@@ -48,16 +61,16 @@ Template.create.onRendered(function() {
 	$("#friends-autocomplete").autocomplete({
 		source: auto_friends,
 		focus: function( event, ui ) {
-        	$("#friends-autocomplete").val( ui.item.label );
-        	return false;
-      	},
-      	select: function( event, ui ) {
-      		var arr = Session.get("selectedFriends");
-      		arr.push(ui.item);
-      		Session.set("selectedFriends", arr);
-      		$("#friends-autocomplete").val('');
-      		return false;
-      	} 
+			$("#friends-autocomplete").val( ui.item.label );
+			return false;
+		},
+		select: function( event, ui ) {
+			var arr = Session.get("selectedFriends");
+			arr.push(ui.item);
+			Session.set("selectedFriends", arr);
+			$("#friends-autocomplete").val('');
+			return false;
+		} 
 	});
 });
 
@@ -76,6 +89,7 @@ Template.create.events({
 		purch.members = selected.map(function(elem){return elem.id});
 		purch.accepted = [];
 		purch.rejected = [];
+		purch.paid = [];
 		purch.created_at = new Date();
 
 		var member_names = {};
@@ -89,10 +103,20 @@ Template.create.events({
 			if (res.length > 0) {
 				alert("ERROR:\n" + res.join("\n"));
 			} else {
-				Purchases.insert(purch);
-				// Router.go('/')
-				tempPurch = Purchases.findOne({title: purch.title});
-				Router.go('purchase.show', {_id: tempPurch._id});
+				/* Add the purchase to the Purchases collection */
+				var pid = Purchases.insert(purch);
+				/* Add the purchase ID to the creator's list of invited members.
+				 * If an invited venmo member isn't a member of ShareCost, then
+				 * abort, and remove the purchase. */
+				try {
+					Meteor.call("send_purchase", pid, purch.members);
+				} catch (e) {
+					Purchases.remove(pid);
+					alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
+				}
+				/* Add the purchase ID to the creator's list of created purchases */
+				Meteor.call("own_purchase", pid);
+				Router.go('purchase.show', {_id: pid});
 			}
 		});
 	},
@@ -111,55 +135,28 @@ Template.create.events({
 });
 
 Template.create.helpers({
-  'selectedFriends': function() {
-    return Session.get("selectedFriends");
-  }
+	'selectedFriends': function() {
+		return Session.get("selectedFriends");
+	}
 });
 
 
 Template.purchaseProposal.helpers({
-	'creatorName': function() {
-		var purch = Template.instance().data;
-		return purch.member_names[purch.creator];
-	},
-	/* Returns true if the creator of this purchase is logged in. */
-	'isCreator': function() {
-		var purch = Template.instance().data;
-		return purch.creator == Meteor.user().services.venmo.id;
-	},
-	'accepted': function() {
-		var purch = Template.instance().data;
-		return purch.accepted.map(function(elem){
-			return purch.member_names[elem];
-		});
-	},
-	'rejected': function() {
-		var purch = Template.instance().data;
-		return purch.rejected.map(function(elem){
-			return purch.member_names[elem];
-		});
-	},
-	'pending': function() {
-		var purch = Template.instance().data;
-		var a = purch.accepted;
-		var r = purch.rejected;
-		var pending = [];
-		/* Disgusting rendition of a set difference */
-		purch.members.forEach(function(member) {
-			if (a.indexOf(member) == -1 && r.indexOf(member) == -1) {
-				pending.push(member);
-			}
-		});
-		return pending.map(function(elem){
-			return purch.member_names[elem];
-		});
-	},
 	'getPurchaseRoute': function() {
 		return "/purchase/" + this._id;
 	}
 });
 
-Template.purchaseProposal.events({
+/*Global Events*/
+var events = {
+	'click #logout': function(event) {
+		Meteor.logout(function(err){
+			if (err) {
+				throw new Meteor.Error("Logout failed");
+			}
+			Router.go('/');
+		});
+	},
 	'click #accept-butt': function(event) {
 		var purch_id = Template.instance().data._id;
 		Meteor.call("accept_purchase", purch_id, function(err, res) {
@@ -176,25 +173,48 @@ Template.purchaseProposal.events({
 			}
 		});
 	}
-});
-
-var events = {
-  'click #logout': function(event) {
-    Meteor.logout(function(err){
-        if (err) {
-            throw new Meteor.Error("Logout failed");
-        }
-        Router.go('/');
-    });
-  }
 }
 
 Template.BaseLayout.events(events);
-Template.home.events(events);
-Template.create.events(events);
+Template.ShowPurchase.events(events);
+Template.purchaseProposal.events(events);
 
+/*Global Helpers*/
 Template.registerHelper('getProfilePictureUrl', function() {
-    var user = Meteor.user();
-    return user.services.venmo.profile_picture_url
+	var user = Meteor.user();
+	return user.services.venmo.profile_picture_url
 });
-
+Template.registerHelper('getCreatorName', function() {
+	return this.member_names[this.creator];
+});
+/* Returns true if the creator of this purchase is logged in. */
+Template.registerHelper('isCreator', function() {
+	return this.creator == Meteor.user().services.venmo.id;
+});
+Template.registerHelper('getAcceptedNames', function() {
+	var purch = this;
+	return purch.accepted.map(function(elem){
+		return purch.member_names[elem];
+	});
+});
+Template.registerHelper('getRejectedNames', function() {
+	var purch = this;
+	return purch.rejected.map(function(elem){
+		return purch.member_names[elem];
+	});
+});
+Template.registerHelper('getPendingNames', function() {
+	var purch = this;
+	var a = purch.accepted;
+	var r = purch.rejected;
+	var pending = [];
+	/* Disgusting rendition of a set difference */
+	purch.members.forEach(function(member) {
+		if (a.indexOf(member) == -1 && r.indexOf(member) == -1) {
+			pending.push(member);
+		}
+	});
+	return pending.map(function(elem){
+		return purch.member_names[elem];
+	});
+});

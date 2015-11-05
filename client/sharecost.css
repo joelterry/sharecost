@@ -60,8 +60,19 @@
 .cost-input {
 	width: 30%;
 }
+
+.cost-share {
+    width: 70px;
+    display: inline-block;
+}
+
+.label-name {
+    width: 40%;
+    display: inline-block;
+}
+
 .added-friend {
-	width: 40%;
+	width: 60%;
 	line-height: 250%;
 }
 .delete-friend {

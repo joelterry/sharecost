@@ -83,6 +83,14 @@ if (Meteor.isServer) {
         errors.push("No more than 10 friends allowed.");
       }
 
+      var sum = 0;
+      for (var member in purchase.split) {
+        sum += purchase.split[member];
+      }
+      if (sum < purchase.cost - 1 || sum > purchase.cost + 1) {
+        errors.push("Specified costs do not add up.");
+      }
+
       return errors;
     }
   });

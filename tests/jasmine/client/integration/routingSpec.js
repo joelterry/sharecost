@@ -1,31 +1,29 @@
 describe("Route tests", function() {
-  beforeEach(function (done) {
-    Router.go("/create");
-    Tracker.afterFlush(done);
-  });
+    var toReturn = 0;
 
-  beforeEach(waitForRouter);
-
-  /*afterEach(function(done) {
-    if (Meteor.user()) {
-      Meteor.logout(function() {
-        done();
-      });
-    }
-  });*/
-
-  it("only show login screen before logging in", function() {
-    if (!Meteor.user()) {
-      expect(Router.current().route.getName()).toEqual("login");
-    }
-  });
-
-  //use a mock for login? redirect URL is mirrored (I think)
-  /*it("logging in redirects to homepage", function() {
-    Meteor.loginWithVenmo("element0flight@gmail.com", "Abc12345", function(err) {
-      expect(err).toBeUndefined();
-      expect(Meteor.userId()).not.toBeNull();
-      expect(Router.current().route.getName()).toEqual("home");
+    beforeEach(function (done) {
+        spyOn(Meteor, "user").and.callFake(function() {
+            return toReturn;
+        });
+        Router.go("/create");
+        Tracker.afterFlush(done);
     });
-  });*/
+
+    beforeEach(waitForRouter);
+
+    it("only show login screen before logging in", function() {
+        expect(Router.current().route.getName()).toEqual("login");
+        toReturn = 5; // Pseudo Login
+    });
+
+    it("after logging in, taken to create page", function() {
+        expect(Router.current().route.getName()).toEqual("create");
+        toReturn = 0; // Pseudo Logout
+    });
+
+    // I don't know why this one fails
+    it("upon logout, redirect once again to login", function() {
+        expect(Router.current().route.getName()).toEqual("login");
+    });
+
 });

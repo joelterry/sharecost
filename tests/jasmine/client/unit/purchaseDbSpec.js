@@ -1,3 +1,4 @@
+// Doesn't really test anything, I was just practicing the syntax
 "use strict";
 describe("Purchase test", function () {
   var myDatabase = Purchases;

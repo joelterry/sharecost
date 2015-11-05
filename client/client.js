@@ -97,6 +97,7 @@ Template.create.events({
 		purch.rejected = [];
 		purch.paid = [];
 		purch.created_at = new Date();
+		purch.messages = [];
 
 		var member_names = {};
 		selected.forEach(function(elem){
@@ -208,6 +209,68 @@ Template.purchaseProposal.events({
 	}
 });
 
+
+Template.ShowPurchase.onRendered(function(){
+    Session.set('currentPurchaseID', this._id);
+});
+
+Template.ShowPurchase.helpers({
+    'populateMessages': function(){
+    	/* Sometimes the template renders before SOMETHING shows up (not sure if it's
+    	 * the database query or template context), so you need to check that purchase
+    	 * exists first, otherwise there's the occasional frontend exception.
+    	 */
+    	var purchase = Purchases.findOne(this._id);
+    	if (purchase) {
+    		return purchase.messages;
+    	}
+    },
+    'replying': function(){
+     	return Session.get('reply') == this.id;
+    },
+    'comments': function(){
+    	return this.comments;
+    }
+});
+
+Template.ShowPurchase.events({
+    /* Message creation via form submission */
+    'submit .new-message': function(event) {
+        event.preventDefault();
+
+        var message = {};
+        message.message = event.target.message.value;
+        message.creator = Meteor.user().services.venmo.display_name;
+        message.created_at = new Date();
+        message.id = Purchases.findOne(this._id).messages.length;
+        message.comments= [];
+
+        Purchases.update(this._id, {$push: {messages: message}});
+        event.target.message.value = "";
+    },
+    'click .reply-button': function(event){
+    	event.preventDefault();
+
+    	Session.set('reply', this.id);
+    },
+    'submit .new-reply': function(event){
+    	event.preventDefault();
+
+    	var purch_id = Template.instance().data._id;
+
+    	var messages = Purchases.findOne(purch_id).messages;
+    	var message = messages[this.id];
+    	message.comments.push(event.target.reply.value);
+    	Purchases.update(purch_id, {$set: {messages: messages}});
+
+    	event.target.reply.value = "";
+    	Session.set('reply', undefined);
+    }
+});
+
+
+
+
 var events = {
   'click #logout': function(event) {
     Meteor.logout(function(err){
@@ -227,4 +290,7 @@ Template.registerHelper('getProfilePictureUrl', function() {
     var user = Meteor.user();
     return user.services.venmo.profile_picture_url
 });
+
+
+
 

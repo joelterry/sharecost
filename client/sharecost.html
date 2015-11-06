@@ -163,7 +163,7 @@
         	{{/if}}
         	<ul class="comments"> 
         		{{#each comments}}
-        			{{.}}
+        			<li><span>{{creator}}: {{message}} at {{created_at}}</span></li>
         		{{/each}}
         	</ul>
         </li>

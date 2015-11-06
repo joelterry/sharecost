@@ -214,6 +214,7 @@ Template.ShowPurchase.onRendered(function(){
     Session.set('currentPurchaseID', this._id);
 });
 
+
 Template.ShowPurchase.helpers({
     'populateMessages': function(){
     	/* Sometimes the template renders before SOMETHING shows up (not sure if it's
@@ -238,6 +239,8 @@ Template.ShowPurchase.events({
     'submit .new-message': function(event) {
         event.preventDefault();
 
+        /* Message initialization; we should probably
+         * transplant this to a constructor to models.js */
         var message = {};
         message.message = event.target.message.value;
         message.creator = Meteor.user().services.venmo.display_name;
@@ -252,6 +255,7 @@ Template.ShowPurchase.events({
     	event.preventDefault();
 
     	Session.set('reply', this.id);
+    	$("input#reply").focus();
     },
     'submit .new-reply': function(event){
     	event.preventDefault();
@@ -260,7 +264,15 @@ Template.ShowPurchase.events({
 
     	var messages = Purchases.findOne(purch_id).messages;
     	var message = messages[this.id];
-    	message.comments.push(event.target.reply.value);
+
+    	/* Reply initialization */
+    	var reply = {};
+    	reply.message = event.target.reply.value;
+    	reply.creator = Meteor.user().services.venmo.display_name;
+    	reply.created_at = new Date();
+    	reply.id = message.comments.length;
+
+    	message.comments.push(reply);
     	Purchases.update(purch_id, {$set: {messages: messages}});
 
     	event.target.reply.value = "";

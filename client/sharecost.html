@@ -180,7 +180,38 @@
 						<div><button id="reject-butt" class = "btn btn-default">Reject</button></div>
 					{{/unless}}
 				</div>
+				<ul>
+				{{#each populateMessages}}
+			        <li class="message" id={{id}}>
+			        	<span>{{creator}}: {{message}} at {{created_at}}</span>
+			        	{{#if replying}}
+			        		<form class="new-reply form-horizontal" role = "form">
+						        <div class="form-group">
+						            <label class = "control-label" for="description">Reply:</label>
+						            <input type="text" name = "reply" class="form-control" id="reply">
+						        </div>
+						        <input class = "btn btn-default" type="submit" value="Submit" id="replySubmit">
+						    </form>
+			        	{{else}}
+			        		<button class="reply-button">Reply</button>
+			        	{{/if}}
+			        	<ul class="comments"> 
+			        		{{#each comments}}
+			        			<li><span>{{creator}}: {{message}} at {{created_at}}</span></li>
+			        		{{/each}}
+			        	</ul>
+			        </li>
+			    {{/each}}
+			    </ul>
+    <form class="new-message form-horizontal" role = "form">
+        <div class="form-group">
+            <label class = "control-label" for="description">Message:</label>
+            <input type="text" name = "message" class="form-control" id="message">
+        </div>
+        <input class = "btn btn-default" type="submit" value="Submit" id="messageSubmit">
+    </form>
 			</div>
 		</div>
 	</div>
+    
 </template>

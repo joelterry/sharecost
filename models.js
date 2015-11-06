@@ -20,6 +20,7 @@ paid: [venmo_id, ...]
 cost: number
 created_at: number
 venmo_responses: { }  NOTE: should we have this?
+messages: [message, ...]
 */
 
 

@@ -29,13 +29,12 @@ Friends = new Mongo.Collection("friends");
 if (Meteor.isServer) {
   /* Server publishes all purchases with current user as a member */
   Meteor.publish("purchases", function() {
-    return Purchases.find({members: { $all : [this.userId] }});
+    return Purchases.find();
   });
 
   Meteor.publish("userData", function () {
     if (this.userId) {
-      return Meteor.users.find({_id: this.userId},
-                               {fields: {'purchases': 1}});
+      return Meteor.users.find({_id: this.userId});
     } else {
       this.ready();
     }

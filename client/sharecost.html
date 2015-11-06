@@ -69,16 +69,16 @@
 		<div id = "center" class = "proposal-form col-xs-10 center-block">
 			<form class="new-purchase form-horizontal" role = "form">
 				<div class="form-group">
-				    <label class = "control-label" for="title">Title:</label>
-				    <input type="text" name = "title" class="form-control" id="title">
+					<label class = "control-label" for="title">Title:</label>
+					<input type="text" name = "title" class="form-control" id="title">
 				</div>
 				<div class="form-group">
-				    <label class = "control-label" for="description">Description:</label>
-				    <textarea name = "description" class="form-control" id="description"></textarea>
+					<label class = "control-label" for="description">Description:</label>
+					<textarea name = "description" class="form-control" id="description"></textarea>
 				</div>
 				<div class="form-group">
-				    <label class = "control-label" for="cost">Total Cost:</label>
-				    <input type="text" name = "cost" class="cost-input form-control" id="cost">
+					<label class = "control-label" for="cost">Total Cost:</label>
+					<input type="text" name = "cost" class="cost-input form-control" id="cost">
 				</div>
 				<div class = "form-group">
 					<ul id="selected-friends">
@@ -180,38 +180,44 @@
 						<div><button id="reject-butt" class = "btn btn-default">Reject</button></div>
 					{{/unless}}
 				</div>
-				<ul>
-				{{#each populateMessages}}
-			        <li class="message" id={{id}}>
-			        	<span>{{creator}}: {{message}} at {{created_at}}</span>
-			        	{{#if replying}}
-			        		<form class="new-reply form-horizontal" role = "form">
-						        <div class="form-group">
-						            <label class = "control-label" for="description">Reply:</label>
-						            <input type="text" name = "reply" class="form-control" id="reply">
-						        </div>
-						        <input class = "btn btn-default" type="submit" value="Submit" id="replySubmit">
-						    </form>
-			        	{{else}}
-			        		<button class="reply-button">Reply</button>
-			        	{{/if}}
-			        	<ul class="comments"> 
-			        		{{#each comments}}
-			        			<li><span>{{creator}}: {{message}} at {{created_at}}</span></li>
-			        		{{/each}}
-			        	</ul>
-			        </li>
-			    {{/each}}
-			    </ul>
-    <form class="new-message form-horizontal" role = "form">
-        <div class="form-group">
-            <label class = "control-label" for="description">Message:</label>
-            <input type="text" name = "message" class="form-control" id="message">
-        </div>
-        <input class = "btn btn-default" type="submit" value="Submit" id="messageSubmit">
-    </form>
 			</div>
 		</div>
 	</div>
-    
+	<div class = "row">
+		<div id = "center" class = "row comment-form col-xs-10 center-block">
+			{{#each populateMessages}}
+				<div class="message" id={{id}}>
+					<span class= "posted-by">{{creator}}</span><span>  {{message}}</span><div class = "posted-at">at {{created_at}}</div>
+					{{#if replying}}
+					{{else}}
+						<button class="reply-button btn btn-default">Reply</button>
+					{{/if}}
+					<ul class="comments">
+						{{#each comments}}
+							<li><span class= "posted-by">{{creator}}</span><span>  {{message}}</span><div class = "posted-at">at {{created_at}}</div></li>
+						{{/each}}
+					</ul>
+					{{#if replying}}
+						<form class="new-reply form-horizontal" role = "form">
+							<div class="form-group">
+								<label class = "control-label" for="description">Reply:</label>
+								<input type="text" name = "reply" class="form-control" id="reply">
+							</div>
+							<input class = "btn btn-default" type="submit" value="Submit" id="replySubmit">
+						</form>
+					{{/if}}
+				</div>
+			{{/each}}
+		</div>
+		<div id = "center" class = "row comment-form col-xs-8 center-block comment-input">
+			<form class="new-message form-horizontal" role = "form">
+				<div class="form-group">
+					<label class = "control-label" for="description">Message:</label>
+					<input type="text" name = "message" class="form-control" id="message">
+				</div>
+				<input class = "btn btn-default" type="submit" value="Submit" id="messageSubmit">
+			</form>
+		</div>
+		<div class = "row footer"></div>
+	</div>
 </template>

@@ -57,6 +57,9 @@
 	padding: 30px;
 	border-radius: 4px;
 }
+.purchase-page .proposal-form {
+	margin-top: 32px;
+}
 .cost-input {
 	width: 30%;
 }

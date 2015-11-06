@@ -109,15 +109,16 @@ Template.create.events({
 				/* Add the purchase ID to the creator's list of invited members.
 				 * If an invited venmo member isn't a member of ShareCost, then
 				 * abort, and remove the purchase. */
-				try {
-					Meteor.call("send_purchase", pid, purch.members);
-				} catch (e) {
-					Purchases.remove(pid);
-					alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
-				}
-				/* Add the purchase ID to the creator's list of created purchases */
-				Meteor.call("own_purchase", pid);
-				Router.go('purchase.show', {_id: pid});
+				Meteor.call("send_purchase", pid, purch.members, function(error, result) {
+					if (error) {
+						Purchases.remove(pid);
+						alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
+					} else {
+						/* Add the purchase ID to the creator's list of created purchases */
+						Meteor.call("own_purchase", pid);
+						Router.go('purchase.show', {_id: pid});
+					}
+				});
 			}
 		});
 	},
@@ -254,7 +255,8 @@ Template.purchaseProposal.events(events);
 /*Global Helpers*/
 Template.registerHelper('getProfilePictureUrl', function() {
 	var user = Meteor.user();
-	return user.services.venmo.profile_picture_url
+	if(user.services.venmo)
+		return user.services.venmo.profile_picture_url;
 });
 
 Template.registerHelper('getCreatorName', function() {

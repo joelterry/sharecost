@@ -14,7 +14,7 @@ describe("Route tests", function() {
 
         it("only show login screen before logging in", function() {
             expect(Router.current().route.getName()).toEqual("login");
-            toReturn = 0; // Pseudo Logout
+            toReturn = 0;
         });
 
         it("upon logout, redirect once again to login", function() {

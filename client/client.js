@@ -255,7 +255,7 @@ Template.purchaseProposal.events(events);
 /*Global Helpers*/
 Template.registerHelper('getProfilePictureUrl', function() {
 	var user = Meteor.user();
-	if(user.services.venmo)
+	if (user.services && user.services.venmo)
 		return user.services.venmo.profile_picture_url;
 });
 

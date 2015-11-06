@@ -86,7 +86,11 @@
 						{{#each selectedFriends}}
 							<li id="{{id}}" class = "added-friend">
 								<div class="label-name">{{label}}</div>
-                                <input type="text" class="cost-share form-control">
+                                {{#if isNotChecked}}
+                                    <input type="text" class="cost-share form-control">
+                                {{else}}
+                                    <input type="text" class="hide-init cost-share form-control">
+                                {{/if}}
 								<button type="button" class="delete-friend btn btn-default">Remove</button> </li>
 								<div id="center"></div>
 						{{/each}}

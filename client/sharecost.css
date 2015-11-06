@@ -61,6 +61,10 @@
 	width: 30%;
 }
 
+.hide-init {
+    visibility: hidden;
+}
+
 .cost-share {
     width: 70px;
     display: inline-block;

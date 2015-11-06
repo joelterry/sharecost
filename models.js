@@ -68,6 +68,7 @@ if (Meteor.isServer) {
       var DESC_MAX = 256;
       var PURCH_MIN = 1;
       var PURCH_MAX = 10;
+      var badSplitCost = false;
 
       var errors = [];
       errors = errors.concat(check_string("Title", purchase.title, TITLE_MIN, TITLE_MAX),
@@ -85,7 +86,15 @@ if (Meteor.isServer) {
 
       var sum = 0;
       for (var member in purchase.split) {
-        sum += purchase.split[member];
+        if (isNaN(purchase.split[member])) {
+          badSplitCost = true;
+        }
+        else {
+          sum += purchase.split[member];
+        }
+      }
+      if (badSplitCost) {
+        errors.push("Cost should be a number.");
       }
       if (sum < purchase.cost - 1 || sum > purchase.cost + 1) {
         errors.push("Specified costs do not add up.");

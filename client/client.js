@@ -155,12 +155,14 @@ Template.create.events({
     'click .cost-checkbox': function(event) {
         if ($(event.target).prop("checked")) {
             $(".cost-share").hide();
+            $(".hide-init").css("visibility", "hidden");
             if ($("li").first().attr("id") == "me") {
                 $("li").first().remove();
             }
         }
         else {
             $(".cost-share").show();
+            $(".hide-init").css("visibility", "visible");
             if (!$("li").first().attr("id") != "me") {
                 $("#selected-friends").prepend("<li id='me' class = 'added-friend'> <div class='label-name'>Me</div> <input type='text' class='cost-share form-control'></li><div id='center'></div>");
             }
@@ -171,7 +173,10 @@ Template.create.events({
 Template.create.helpers({
 	'selectedFriends': function() {
 		return Session.get("selectedFriends");
-	}
+	},
+    'isNotChecked': function() {
+        return !($(".cost-checkbox").prop("checked"));
+    }
 });
 
 

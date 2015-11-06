@@ -41,6 +41,15 @@ if (Meteor.isServer) {
     }
   });
 
+  Meteor.publish('friends', function () {
+    if (this.userId){
+      return Friends.find({_id: this.userId});
+    } else {
+      this.ready();
+    }
+    
+  });
+
 
 
   /* Helper for validating strings. min and max are inclusive.
@@ -93,4 +102,5 @@ if (Meteor.isClient) {
   /* Server publishes all purchases with current user as a member */
   Meteor.subscribe("purchases");
   Meteor.subscribe("userData");
+  Meteor.subscribe("friends");
 }

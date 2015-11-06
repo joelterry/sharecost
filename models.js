@@ -20,6 +20,7 @@ paid: [venmo_id, ...]
 cost: number
 created_at: number
 venmo_responses: { }  NOTE: should we have this?
+messages: [message, ...]
 */
 
 
@@ -29,19 +30,25 @@ Friends = new Mongo.Collection("friends");
 if (Meteor.isServer) {
   /* Server publishes all purchases with current user as a member */
   Meteor.publish("purchases", function() {
-    return Purchases.find({members: { $all : [this.userId] }});
+    return Purchases.find();
   });
 
   Meteor.publish("userData", function () {
     if (this.userId) {
-      return Meteor.users.find({_id: this.userId},
-                               {fields: {'purchases': 1}});
+      return Meteor.users.find({_id: this.userId});
     } else {
       this.ready();
     }
   });
 
-
+  Meteor.publish('friends', function () {
+    if (this.userId){
+      return Friends.find({_id: this.userId});
+    } else {
+      this.ready();
+    }
+    
+  });
 
   /* Helper for validating strings. min and max are inclusive.
    * Returns null if valid, an array of error messages if not. */
@@ -110,4 +117,5 @@ if (Meteor.isClient) {
   /* Server publishes all purchases with current user as a member */
   Meteor.subscribe("purchases");
   Meteor.subscribe("userData");
+  Meteor.subscribe("friends");
 }

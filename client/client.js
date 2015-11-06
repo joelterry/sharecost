@@ -2,10 +2,9 @@
 
 Template.login.events({
 	'click #venmo-login': function(event) {
-		Meteor.loginWithVenmo(function (err, res) {
+		Meteor.loginWithVenmo({loginStyle:"redirect"}, function (err, res) {
 			if (err){
-				console.log(err);
-				throw new Meteor.Error("Login failed"); 
+				Session.set('errorMessage', err.reason || 'Unknown error');
 			}
 			Meteor.call("after_login", function(err) {
 				if (err) {
@@ -92,6 +91,7 @@ Template.create.events({
 		purch.paid = [];
         purch.split = {};
 		purch.created_at = new Date();
+		purch.messages = [];
 
 		var member_names = {};
 		selected.forEach(function(elem){
@@ -128,15 +128,16 @@ Template.create.events({
 				/* Add the purchase ID to the creator's list of invited members.
 				 * If an invited venmo member isn't a member of ShareCost, then
 				 * abort, and remove the purchase. */
-				try {
-					Meteor.call("send_purchase", pid, purch.members);
-				} catch (e) {
-					Purchases.remove(pid);
-					alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
-				}
-				/* Add the purchase ID to the creator's list of created purchases */
-				Meteor.call("own_purchase", pid);
-				Router.go('purchase.show', {_id: pid});
+				Meteor.call("send_purchase", pid, purch.members, function(error, result) {
+					if (error) {
+						Purchases.remove(pid);
+						alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
+					} else {
+						/* Add the purchase ID to the creator's list of created purchases */
+						Meteor.call("own_purchase", pid);
+						Router.go('purchase.show', {_id: pid});
+					}
+				});
 			}
 		});
 	},
@@ -186,6 +187,76 @@ Template.purchaseProposal.helpers({
 	}
 });
 
+
+Template.ShowPurchase.onRendered(function(){
+    Session.set('currentPurchaseID', this._id);
+});
+
+Template.ShowPurchase.helpers({
+    'populateMessages': function(){
+    	/* Sometimes the template renders before SOMETHING shows up (not sure if it's
+    	 * the database query or template context), so you need to check that purchase
+    	 * exists first, otherwise there's the occasional frontend exception.
+    	 */
+    	var purchase = Purchases.findOne(this._id);
+    	if (purchase) {
+    		return purchase.messages;
+    	}
+    },
+    'replying': function(){
+     	return Session.get('reply') == this.id;
+    },
+    'comments': function(){
+    	return this.comments;
+    }
+});
+
+Template.ShowPurchase.events({
+    /* Message creation via form submission */
+    'submit .new-message': function(event) {
+        event.preventDefault();
+
+        /* Message initialization; we should probably
+         * transplant this to a constructor to models.js */
+        var message = {};
+        message.message = event.target.message.value;
+        message.creator = Meteor.user().services.venmo.display_name;
+        message.created_at = new Date();
+        message.id = Purchases.findOne(this._id).messages.length;
+        message.comments= [];
+
+        Purchases.update(this._id, {$push: {messages: message}});
+        event.target.message.value = "";
+    },
+    'click .reply-button': function(event){
+    	event.preventDefault();
+
+    	Session.set('reply', this.id);
+    	$("input#reply").focus();
+    },
+    'submit .new-reply': function(event){
+    	event.preventDefault();
+
+    	var purch_id = Template.instance().data._id;
+
+    	var messages = Purchases.findOne(purch_id).messages;
+    	var message = messages[this.id];
+
+    	/* Reply initialization */
+    	var reply = {};
+    	reply.message = event.target.reply.value;
+    	reply.creator = Meteor.user().services.venmo.display_name;
+    	reply.created_at = new Date();
+    	reply.id = message.comments.length;
+
+    	message.comments.push(reply);
+    	Purchases.update(purch_id, {$set: {messages: messages}});
+
+    	event.target.reply.value = "";
+    	Session.set('reply', undefined);
+    }
+});
+
 /*Global Events*/
 var events = {
 	'click #logout': function(event) {
@@ -212,7 +283,8 @@ var events = {
 			}
 		});
 	}
-}
+};
+
 
 Template.BaseLayout.events(events);
 Template.ShowPurchase.events(events);
@@ -221,8 +293,10 @@ Template.purchaseProposal.events(events);
 /*Global Helpers*/
 Template.registerHelper('getProfilePictureUrl', function() {
 	var user = Meteor.user();
-	return user.services.venmo.profile_picture_url
+	if (user.services && user.services.venmo)
+		return user.services.venmo.profile_picture_url;
 });
+
 Template.registerHelper('getCreatorName', function() {
 	return this.member_names[this.creator];
 });

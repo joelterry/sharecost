@@ -57,6 +57,25 @@
 	padding: 30px;
 	border-radius: 4px;
 }
+.comment-form {
+	padding: 30px;
+	max-width: 720px;
+}
+.comment-input {
+	margin-top: -60px;
+}
+.comments {
+}
+.message {
+	background-color: #EDEAFA;
+	border-radius: 4px;
+	padding: 10px;
+	margin-bottom: 10px;
+	position: relative;
+}
+.purchase-page .proposal-form {
+	margin-top: 32px;
+}
 .cost-input {
 	width: 30%;
 }
@@ -91,8 +110,8 @@
 
 .proposal {
 	margin-top: 30px;
-	background-color: #EDEAFA;
 	padding: 30px;
+	background-color: #EDEAFA;
 	border-radius: 4px;
 }
 .proposal p {
@@ -108,4 +127,29 @@
 #reject-butt {
 	margin: auto;
 	margin-top: 20px;
+}
+#message {
+	width: 80%;
+}
+.reply-button {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+.new-reply {
+	width: 80%;
+	margin: auto;
+}
+.new-reply .form-group {
+	padding: 2px;
+	margin-bottom: 0;
+}
+.posted-at {
+	font-size: 10px;
+}
+.posted-by {
+	font-weight: 700;
+}
+.footer {
+	margin-bottom: 96px;
 }

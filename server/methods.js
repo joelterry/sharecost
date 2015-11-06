@@ -26,7 +26,7 @@ if (Meteor.isServer){
 	}
 
 	/* Checks if 'purchase' is ready to be processed (unanimous vote in favor). */
-	var valid_purchase = function(purchase) {
+	valid_purchase = function(purchase) {
 		if (purchase.rejected.length > 0) {
 			throw new Meteor.Error("Can't process this purchase, somebody rejected it.");
 		}

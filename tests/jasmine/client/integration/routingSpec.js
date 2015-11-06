@@ -1,29 +1,59 @@
 describe("Route tests", function() {
-    var toReturn = 0;
-
-    beforeEach(function (done) {
-        spyOn(Meteor, "user").and.callFake(function() {
-            return toReturn;
-        });
-        Router.go("/create");
-        Tracker.afterFlush(done);
-    });
-
     beforeEach(waitForRouter);
 
-    it("only show login screen before logging in", function() {
-        expect(Router.current().route.getName()).toEqual("login");
-        toReturn = 5; // Pseudo Login
+    describe("correctly take to login route", function(){
+        var toReturn = 0;
+
+        beforeEach(function (done) {
+            spyOn(Meteor, "user").and.callFake(function() {
+                return toReturn;
+            });
+            Router.go("/create");
+            Tracker.afterFlush(done);
+        });
+
+        it("only show login screen before logging in", function() {
+            expect(Router.current().route.getName()).toEqual("login");
+            toReturn = 0; // Pseudo Logout
+        });
+
+        it("upon logout, redirect once again to login", function() {
+            expect(Router.current().route.getName()).toEqual("login");
+        });
     });
 
-    it("after logging in, taken to create page", function() {
-        expect(Router.current().route.getName()).toEqual("create");
-        toReturn = 0; // Pseudo Logout
+    describe("takes to correct create route if logged in", function(){
+        toReturn = 5;
+
+        beforeEach(function (done) {
+            spyOn(Meteor, "user").and.callFake(function() {
+                return toReturn;
+            });
+            Router.go("/create");
+            Tracker.afterFlush(done);
+        });
+
+        it("after logging in, taken to create page", function() {
+            expect(Router.current().route.getName()).toEqual("create");
+        });
+
     });
 
-    // I don't know why this one fails
-    it("upon logout, redirect once again to login", function() {
-        expect(Router.current().route.getName()).toEqual("login");
+    describe("takes to correct home route if logged in", function(){
+        toReturn = 5;
+
+        beforeEach(function (done) {
+            spyOn(Meteor, "user").and.callFake(function() {
+                return toReturn;
+            });
+            Router.go("/");
+            Tracker.afterFlush(done);
+        });
+
+        it("after logging in, taken to create page", function() {
+            expect(Router.current().route.path()).toEqual("/");
+        });
+
     });
 
 });

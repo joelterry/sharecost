@@ -49,8 +49,6 @@ if (Meteor.isServer) {
     
   });
 
-
-
   /* Helper for validating strings. min and max are inclusive.
    * Returns null if valid, an array of error messages if not. */
   var check_string = function(name, text, min, max) {

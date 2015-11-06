@@ -89,7 +89,7 @@ Template.create.events({
 		purch.accepted = [];
 		purch.rejected = [];
 		purch.paid = [];
-        purch.split = {};
+		purch.split = {};
 		purch.created_at = new Date();
 		purch.messages = [];
 
@@ -99,25 +99,25 @@ Template.create.events({
 		});
 		member_names[purch.creator] = Meteor.user().services.venmo.display_name;
 		purch.member_names = member_names;
-        var evenShare = Number((Math.floor((purch.cost * 100) / (purch.members.length + 1)) / 100).toFixed(2));
-        $(event.target).find("li").each(function() {
-            if (!event.target.unevenSplit.checked) {
-                if ($(this).attr("id") != "me") {
-                    console.log( "name: " + $(this).find(".label-name").text() + " share: " + $(this).find(".cost-share").val() );
-                    purch.split[$(this).attr("id")] = Number($(this).find(".cost-share").val());
-                }
-            }
-            else {
-                purch.split[$(this).attr("id")] = evenShare;
-            }
-        });
-        if (event.target.unevenSplit.checked) {
-            purch.split[purch.creator] = evenShare;
-        }
-        else {
-            purch.split[purch.creator] = Number($("#me").find(".cost-share").val());
-        }
-        console.log(purch.split);
+		var evenShare = Number((Math.floor((purch.cost * 100) / (purch.members.length + 1)) / 100).toFixed(2));
+		$(event.target).find("li").each(function() {
+			if (!event.target.unevenSplit.checked) {
+				if ($(this).attr("id") != "me") {
+					console.log( "name: " + $(this).find(".label-name").text() + " share: " + $(this).find(".cost-share").val() );
+					purch.split[$(this).attr("id")] = Number($(this).find(".cost-share").val());
+				}
+			}
+			else {
+				purch.split[$(this).attr("id")] = evenShare;
+			}
+		});
+		if (event.target.unevenSplit.checked) {
+			purch.split[purch.creator] = evenShare;
+		}
+		else {
+			purch.split[purch.creator] = Number($("#me").find(".cost-share").val());
+		}
+		console.log(purch.split);
 
 		Meteor.call("check_purchase", purch, function(err, res) {
 			if (res.length > 0) {
@@ -153,31 +153,31 @@ Template.create.events({
 		});
 		Session.set("selectedFriends", new_arr);
 	},
-    'click .cost-checkbox': function(event) {
-        if ($(event.target).prop("checked")) {
-            $(".cost-share").hide();
-            $(".hide-init").css("visibility", "hidden");
-            if ($("li").first().attr("id") == "me") {
-                $("li").first().remove();
-            }
-        }
-        else {
-            $(".cost-share").show();
-            $(".hide-init").css("visibility", "visible");
-            if (!$("li").first().attr("id") != "me") {
-                $("#selected-friends").prepend("<li id='me' class = 'added-friend'> <div class='label-name'>Me</div> <input type='text' class='cost-share form-control'></li><div id='center'></div>");
-            }
-        }
-    }
+	'click .cost-checkbox': function(event) {
+		if ($(event.target).prop("checked")) {
+			$(".cost-share").hide();
+			$(".hide-init").css("visibility", "hidden");
+			if ($("li").first().attr("id") == "me") {
+				$("li").first().remove();
+			}
+		}
+		else {
+			$(".cost-share").show();
+			$(".hide-init").css("visibility", "visible");
+			if (!$("li").first().attr("id") != "me") {
+				$("#selected-friends").prepend("<li id='me' class = 'added-friend'> <div class='label-name'>Me</div> <input type='text' class='cost-share form-control'></li><div id='center'></div>");
+			}
+		}
+	}
 });
 
 Template.create.helpers({
 	'selectedFriends': function() {
 		return Session.get("selectedFriends");
 	},
-    'isNotChecked': function() {
-        return !($(".cost-checkbox").prop("checked"));
-    }
+	'isChecked': function() {
+		return $(".cost-checkbox").prop("checked");
+	}
 });
 
 

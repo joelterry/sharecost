@@ -2,7 +2,7 @@
 
 Template.login.events({
 	'click #venmo-login': function(event) {
-		Meteor.loginWithVenmo({loginStyle:"redirect"}, function (err, res) {
+		Meteor.loginWithVenmo({loginStyle:"popup"}, function (err, res) {
 			if (err){
 				Session.set('errorMessage', err.reason || 'Unknown error');
 			}

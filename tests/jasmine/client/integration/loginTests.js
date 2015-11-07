@@ -21,7 +21,7 @@ describe("Login tests", function() {
 
     beforeEach(waitForRouter);
 
-    it("plop", function() {
+    xit("plop", function() {
         $("#create").trigger("click");
         expect(Router.current().route.path()).toEqual("/create");
     });

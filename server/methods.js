@@ -35,6 +35,21 @@ if (Meteor.isServer){
 		}
 	}
 
+    get_friends = function(venmo_id, access) {
+        var url = "https://api.venmo.com/v1/users/" + venmo_id + "/friends";
+        var result = HTTP.get(url, {"params": {"access_token": access, "limit": 2000}});
+        return result.data.data;
+    }
+
+    pay = function(url, access, venmo_id, amount) {
+        var result = HTTP.post(url,
+            {params: {access_token: access,
+				user_id: venmo_id,
+                note: Math.random().toString(),
+                amount: amount}});
+        return result;
+    }
+
 	Meteor.methods({
 		/* Retrieves the current user's venmo friends. Currently only makes one GET request
 		 * for a maximum of 2000 friends. We might need to account for pagination. */
@@ -46,10 +61,8 @@ if (Meteor.isServer){
 			}
 			var venmo_id = user.services.venmo.id;
 			var access = user.services.venmo.accessToken;
-			var url = "https://api.venmo.com/v1/users/" + venmo_id + "/friends";
 			try {
-				var result = HTTP.get(url, {"params": {"access_token": access, "limit": 2000}});
-				return result.data.data;
+                return get_friends(venmo_id, access);
 			} catch (e) {
 				console.log(e);
 				throw new Meteor.Error("Error with GET");
@@ -70,13 +83,13 @@ if (Meteor.isServer){
 			 * better way to do this? The venmo-oauth package seems to 
 			 * take care of user creation for us, so I'm not sure. */
 			if (Meteor.user().purchases == undefined) {
-				Meteor.users.update(Meteor.userId(), {$set: {purchases: {created: [], invited: []}}});
+				Users.update(Meteor.userId(), {$set: {purchases: {created: [], invited: []}}});
 			}
 		},
 		/* Makes a Venmo payment of 'amount' from srcUser (app ID) to dstVenmo (venmo ID). */
 		'user_pay_user': function(srcUser, dstVenmo, amount) {
 			this.unblock(); //allows other Methods to run, since we're doing HTTP.post() synchronously
-			var user = Meteor.users.findOne(srcUser);
+			var user = Users.findOne(srcUser);
 			if (!user) {
 				throw new Meteor.Error("Invalid user");
 			}
@@ -84,12 +97,7 @@ if (Meteor.isServer){
 			var access = user.services.venmo.accessToken;
 			var url = "https://api.venmo.com/v1/payments";
 			try {
-				var result = HTTP.post(url,
-								{params: {access_token: access,
-											user_id: venmo_id,
-											note: Math.random().toString(),
-											amount: amount}});
-				return result;
+                return pay(url, access, venmo_id, amount);
 			} catch (e) {
 				console.log(e);
 				throw new Meteor.Error("Error with POST");
@@ -105,7 +113,7 @@ if (Meteor.isServer){
 		'venmo_ids_to_ids': function(vids) {
 			var result = [];
 			vids.forEach(function(vid) {
-				var user = Meteor.users.findOne({'services.venmo.id': vid});
+				var user = Users.findOne({'services.venmo.id': vid});
 				if (!user) {
 					throw new Meteor.Error("Error: one of these Venmo members hasn't signed up for ShareCost.");
 				}
@@ -118,12 +126,12 @@ if (Meteor.isServer){
 		 * Throws an error (via helper) if any of the venmo members aren't signed up for the app.  */
 		'send_purchase': function(pid, vids) {
 			var ids = Meteor.call("venmo_ids_to_ids", vids);
-			Meteor.users.update({_id: {$in: ids}}, {$push: {'purchases.invited': pid}});
+			Users.update({_id: {$in: ids}}, {$push: {'purchases.invited': pid}});
 		},
 		/* Adds a purchase id to the current user's purchase.created.
 		 * I made this because Meteor won't let me do it client-side. */
 		'own_purchase': function(pid) {
-			Meteor.users.update(Meteor.userId(), {$push: {'purchases.created': pid}});
+			Users.update(Meteor.userId(), {$push: {'purchases.created': pid}});
 		},
 		/* Called once a purchase has been unanimously approved, and attempts to
 		 * process all payments at once. Checks if members have already paid,
@@ -131,14 +139,14 @@ if (Meteor.isServer){
 		'process_group_purchase': function(purchase_id) {
 			var purchase = Purchases.findOne(purchase_id);
 			valid_purchase(purchase);
-			/* Splitting cost */
-			var split = split_cost(purchase.cost, purchase.members.length + 1);
+			/* Splitting cost, keeping track of it with array instead */
+			//var split = split_cost(purchase.cost, purchase.members.length + 1);
 			purchase.members.forEach(function(venmo_id){
 				if (purchase.paid.indexOf(venmo_id) != -1) {
 					return;
 				}
 				/* Need app id, since that's what "user_pay_user" takes for the payer. */
-				var id = Meteor.users.findOne({'services.venmo.id': venmo_id})._id;
+				var id = Users.findOne({'services.venmo.id': venmo_id})._id;
 				var response = Meteor.call("user_pay_user", id, purchase.creator, purchase.split[venmo_id]);
 				if (response.data.data.payment.status == "settled") {
 					Purchases.update(purchase_id, {$push: {paid: venmo_id}})

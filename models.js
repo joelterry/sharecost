@@ -23,9 +23,21 @@ venmo_responses: { }  NOTE: should we have this?
 messages: [message, ...]
 */
 
+friendsDatabase = function() {
+    return new Mongo.Collection("friends");
+}
 
-Purchases = new Mongo.Collection("purchases");
-Friends = new Mongo.Collection("friends");
+purchasesDatabase = function() {
+    return new Mongo.Collection("purchases");
+}
+
+meteorUsers = function() {
+    return Meteor.users
+}
+
+Purchases = purchasesDatabase();
+Friends = friendsDatabase();
+Users = meteorUsers();
 
 if (Meteor.isServer) {
   /* Server publishes all purchases with current user as a member */
@@ -35,7 +47,7 @@ if (Meteor.isServer) {
 
   Meteor.publish("userData", function () {
     if (this.userId) {
-      return Meteor.users.find({_id: this.userId});
+      return Users.find({_id: this.userId});
     } else {
       this.ready();
     }

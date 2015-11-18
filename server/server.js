@@ -3,11 +3,11 @@
 Meteor.startup(function () {
 
 	if (process.env.NODE_ENV === "development"){
-		var clientId = "3008";
-		var secret = "s4CH2SZAwKJuLtFvn7eUyEcJMDr5bcbt";
+		var clientId = Meteor.settings.VENMO.DEV.CLIENT_ID;
+		var secret = Meteor.settings.VENMO.DEV.SECRET;
 	} else {
-		var clientId = "3018";
-		var secret = "YaCkWypcB6AGYd7xjcYmFwVrtVTDybAm";
+		var clientId = Meteor.settings.VENMO.PROD.CLIENT_ID;
+		var secret = Meteor.settings.VENMO.PROD.SECRET;
 	}
 
 	ServiceConfiguration.configurations.remove({

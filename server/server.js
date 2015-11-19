@@ -5,8 +5,6 @@ Meteor.startup(function () {
 	if (process.env.NODE_ENV === "development"){
 		var clientId = "3008";
 		var secret = "s4CH2SZAwKJuLtFvn7eUyEcJMDr5bcbt";
-        //var clientId = "3147";
-        //var secret = "zFN3Nu74cjqypEpgEaMR6hWDugkKGC6M";
 	} else {
 		var clientId = "3018";
 		var secret = "YaCkWypcB6AGYd7xjcYmFwVrtVTDybAm";

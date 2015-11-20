@@ -35,20 +35,20 @@ if (Meteor.isServer){
 		}
 	}
 
-    get_friends = function(venmo_id, access) {
-        var url = "https://api.venmo.com/v1/users/" + venmo_id + "/friends";
-        var result = HTTP.get(url, {"params": {"access_token": access, "limit": 2000}});
-        return result.data.data;
-    }
+	get_friends = function(venmo_id, access) {
+		var url = "https://api.venmo.com/v1/users/" + venmo_id + "/friends";
+		var result = HTTP.get(url, {"params": {"access_token": access, "limit": 2000}});
+		return result.data.data;
+	}
 
-    pay = function(url, access, venmo_id, amount) {
-        var result = HTTP.post(url,
-            {params: {access_token: access,
+	pay = function(url, access, venmo_id, amount) {
+		var result = HTTP.post(url,
+			{params: {access_token: access,
 				user_id: venmo_id,
-                note: Math.random().toString(),
-                amount: amount}});
-        return result;
-    }
+				note: Math.random().toString(),
+				amount: amount}});
+		return result;
+	}
 
 	Meteor.methods({
 		/* Retrieves the current user's venmo friends. Currently only makes one GET request
@@ -62,7 +62,7 @@ if (Meteor.isServer){
 			var venmo_id = user.services.venmo.id;
 			var access = user.services.venmo.accessToken;
 			try {
-                return get_friends(venmo_id, access);
+				return get_friends(venmo_id, access);
 			} catch (e) {
 				console.log(e);
 				throw new Meteor.Error("Error with GET");
@@ -97,7 +97,7 @@ if (Meteor.isServer){
 			var access = user.services.venmo.accessToken;
 			var url = "https://api.venmo.com/v1/payments";
 			try {
-                return pay(url, access, venmo_id, amount);
+				return pay(url, access, venmo_id, amount);
 			} catch (e) {
 				console.log(e);
 				throw new Meteor.Error("Error with POST");

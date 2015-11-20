@@ -1,4 +1,4 @@
-describe("Login tests", function() {
+describe("Navigation tests", function() {
     var user = {};
     user._id = "ycMSMjwJYdP9eJD4M";
     user.services = {};
@@ -21,8 +21,22 @@ describe("Login tests", function() {
 
     beforeEach(waitForRouter);
 
-    it("plop", function() {
+    it("click create", function() {
         $("#create").trigger("click");
-        expect(Router.current().route.path()).toEqual("/create");
+        setTimeout(function() {
+            expect(Router.current().route.path()).toEqual("/create");
+        }, 500);
+        $(".cancel").trigger("click");
+        setTimeout(function() {
+            expect(Router.current().route.path()).toEqual("/");
+        }, 500);
+    });
+
+    it("click logout", function() {
+        expect(Router.current().route.path()).toEqual("/");
+        $("#logout").trigger("click");
+        setTimeout(function() {
+            expect(Router.current().route.path()).toEqual("/login");
+        }, 500);
     });
 });

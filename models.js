@@ -41,7 +41,7 @@ meteorUsers = function() {
 }
 
 groupsDatabase = function(){
-    return Mongo.Collection("groups");
+    return new Mongo.Collection("groups");
 }
 
 Purchases = purchasesDatabase();

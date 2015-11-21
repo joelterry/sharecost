@@ -19,6 +19,9 @@ Template.login.events({
 Template.home.events({
 	'click #create': function(event) {
 		Router.go('/create');
+	},
+	'click #createGroup': function(event){
+		Router.go('/create/groups');
 	}
 });
 
@@ -72,7 +75,6 @@ Template.create.onRendered(function() {
 		} 
 	});
 });
-
 
 Template.create.events({
 	/* Purchase creation via form submission */
@@ -180,13 +182,11 @@ Template.create.helpers({
 	}
 });
 
-
 Template.purchaseProposal.helpers({
 	'getPurchaseRoute': function() {
 		return "/purchase/" + this._id;
 	}
 });
-
 
 Template.ShowPurchase.onRendered(function(){
     Session.set('currentPurchaseID', this._id);
@@ -256,6 +256,57 @@ Template.ShowPurchase.events({
     	Session.set('reply', undefined);
     }
 });
+
+/* note: copied code from above...should change eventually */
+Template.CreateGroup.onRendered(function(){
+	Session.set("selectedFriends", []);
+	var friends = Friends.findOne(Meteor.userId()).venmo_friends;
+	var auto_friends = friends.map(function(elem) {
+		return {
+			/* Venmo id, not app id */
+			'id': elem.id,
+			'label': elem.display_name,
+			'icon': elem.profile_picture_url
+		}
+	});
+	/* jQuery UI autocomplete */
+	$("#friends-autocomplete").autocomplete({
+		source: auto_friends,
+		focus: function( event, ui ) {
+			$("#friends-autocomplete").val( ui.item.label );
+			return false;
+		},
+		select: function( event, ui ) {
+			var arr = Session.get("selectedFriends");
+			arr.push(ui.item);
+			Session.set("selectedFriends", arr);
+			$("#friends-autocomplete").val('');
+			return false;
+		} 
+	});
+});
+
+Template.CreateGroup.helpers({
+	'selectedFriends': function(){
+		return Session.get("selectedFriends");
+	}
+});
+
+Template.CreateGroup.events({
+	'click .delete-friend': function(event) {
+		var id = $(event.target).parents("li").attr("id");
+		var arr = Session.get("selectedFriends");
+		/* Pretty disgusting way to "delete" something, sorry I was in a hurry. */
+		var new_arr = [];
+		arr.forEach(function(elem){
+			if (elem.id != id) {
+				new_arr.push(elem);
+			}
+		});
+		Session.set("selectedFriends", new_arr);
+	}
+});
+
 
 /*Global Events*/
 var events = {

@@ -9,7 +9,9 @@ venmo_friends: [{user1}, {user2}]
 ===Groups Schema===
 _id: hash
 title: ""
-members: [_id...] NOTE: was deciding between venmo ids and _id. went with _id because grants us access to more info if needed
+Description: ""
+members: [venmo_id,...]
+members: [venmo_id: name,...] NOTE: for display purposes
 
 
 ===Purchase Schema===

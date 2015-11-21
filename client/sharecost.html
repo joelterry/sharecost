@@ -22,7 +22,7 @@
 		<div id = "center" class = "col-xs-10 center-block text-center home-content">
 			{{#if currentUser}}
 				<p><button id="create" class="btn btn-default">Create a Proposal</button></p>
-				<p><button id="create-group" class="btn btn-default">Create a Group</button></p>
+				<p><button id="createGroup" class="btn btn-default">Create a Group</button></p>
 				<div class = "col-xs-5">
 					<h3>Your purchase proposals...</h3>
 					<ul class = "purchase-list">
@@ -237,28 +237,18 @@
 		<div id = "center" class = "proposal-form col-xs-10 center-block">
 			<form class="new-purchase form-horizontal" role = "form">
 				<div class="form-group">
-					<label class = "control-label" for="title">Title:</label>
+					<label class = "control-label" for="title">Group Name:</label>
 					<input type="text" name = "title" class="form-control" id="title">
 				</div>
 				<div class="form-group">
 					<label class = "control-label" for="description">Description:</label>
 					<textarea name = "description" class="form-control" id="description"></textarea>
 				</div>
-				<div class="form-group">
-                    <label class = "control-label" for="cost">Total Cost:</label>
-			        <input type="text" name = "cost" class="cost-input form-control" id="cost">
-                    <input type="checkbox" name="unevenSplit" class="cost-checkbox" checked> Split evenly
-				</div>
 				<div class = "form-group">
 					<ul id="selected-friends">
 						{{#each selectedFriends}}
 							<li id="{{id}}" class = "added-friend">
 								<div class="label-name">{{label}}</div>
-								{{#if isChecked}}
-									<input type="text" class="hide-init cost-share form-control">
-								{{else}}
-									<input type="text" class="cost-share form-control">
-								{{/if}}
 								<button type="button" class="delete-friend btn btn-default">Remove</button> </li>
 								<div id="center"></div>
 						{{/each}}

@@ -293,13 +293,10 @@ Template.CreateGroup.helpers({
 });
 
 Template.CreateGroup.events({
-	'submit .groupSubmit': function(event) {
+	'submit': function(event) {
         event.preventDefault();
 
         var groupFriends = Session.get("groupFriends");
-        groupFriends.forEach(function(elem){
-        	console.log(elem.label);
-        });
         var creatorVenmoId = Meteor.user().services.venmo.id;
         var group = {};
         group.title = event.target.groupName.value;
@@ -315,9 +312,10 @@ Template.CreateGroup.events({
 
 		/*should do some sort of check here to make sure a group with the same names doesn't exist*/
 
-        Groups.insert(group);
+        var response = Groups.insert(group);
+        console.log(response);
         /*at this point re route to the home page. this can change to a groups page or whatever*/
-        /*Router.go('/');*/
+        Router.go('/');
     },
 	'click .delete-friend': function(event) {
 		var id = $(event.target).parents("li").attr("id");

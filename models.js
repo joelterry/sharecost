@@ -76,7 +76,7 @@ if (Meteor.isServer) {
 
   Meteor.publish('groups', function(){
     if (this.userID){
-      return Groups.find({_id: this.userID});
+      return Groups.find();
     }else{
       this.ready();
     }

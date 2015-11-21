@@ -30,6 +30,7 @@ describe("integration test", function() {
         spyOn(Meteor, 'user').and.callFake(function() {
             return user1;
         });
+
         get_friends = jasmine.createSpy().and.callFake(function() {
             return [user2.services.venmo, user3.services.venmo];
         });
@@ -53,5 +54,20 @@ describe("integration test", function() {
         setTimeout(function() {
             expect(Friends.find(Meteor.userId())).venmo_friends.length.toBe(2);
         }, 500);
+    });
+
+    it("verify payment", function() {
+        spyOn(Users, 'findOne').and.callFake(function() {
+            return user1;
+        });
+
+        payment = Meteor.call('user_pay_user', Meteor.userId(), user2.services.venmo.id, 1);
+        setTimeout(function() {
+            expect(payment.data.data.payment.status).toEqual('settled');
+        }, 500);
+    });
+
+    it("verify payment fails without a user logged in", function() {
+        expect(function () { Meteor.call('user_pay_user', Meteor.userId(), user2.services.venmo.id, 1) }).toThrow();
     });
 });

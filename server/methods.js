@@ -91,7 +91,7 @@ if (Meteor.isServer){
 			this.unblock(); //allows other Methods to run, since we're doing HTTP.post() synchronously
 			var user = Users.findOne(srcUser);
 			if (!user) {
-				throw new Meteor.Error("Invalid user");
+				throw new Meteor.Error(403, "Invalid user");
 			}
 			var venmo_id = dstVenmo;
 			var access = user.services.venmo.accessToken;

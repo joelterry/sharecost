@@ -11,7 +11,7 @@ _id: hash
 title: ""
 Description: ""
 members: [venmo_id,...]
-members: [venmo_id: name,...] NOTE: for display purposes
+member_names: [venmo_id: name,...] NOTE: for display purposes
 
 
 ===Purchase Schema===

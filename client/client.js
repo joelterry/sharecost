@@ -259,7 +259,7 @@ Template.ShowPurchase.events({
 
 /* note: copied code from above...should change eventually */
 Template.CreateGroup.onRendered(function(){
-	Session.set("selectedFriends", []);
+	Session.set("groupFriends", []);
 	var friends = Friends.findOne(Meteor.userId()).venmo_friends;
 	var auto_friends = friends.map(function(elem) {
 		return {
@@ -277,9 +277,9 @@ Template.CreateGroup.onRendered(function(){
 			return false;
 		},
 		select: function( event, ui ) {
-			var arr = Session.get("selectedFriends");
+			var arr = Session.get("groupFriends");
 			arr.push(ui.item);
-			Session.set("selectedFriends", arr);
+			Session.set("groupFriends", arr);
 			$("#friends-autocomplete").val('');
 			return false;
 		} 
@@ -287,15 +287,41 @@ Template.CreateGroup.onRendered(function(){
 });
 
 Template.CreateGroup.helpers({
-	'selectedFriends': function(){
-		return Session.get("selectedFriends");
+	'groupFriends': function(){
+		return Session.get("groupFriends");
 	}
 });
 
 Template.CreateGroup.events({
+	'submit .groupSubmit': function(event) {
+        event.preventDefault();
+
+        var groupFriends = Session.get("groupFriends");
+        groupFriends.forEach(function(elem){
+        	console.log(elem.label);
+        });
+        var creatorVenmoId = Meteor.user().services.venmo.id;
+        var group = {};
+        group.title = event.target.groupName.value;
+        group.description = event.target.description.value;
+        group.members = groupFriends.map(function(elem){return elem.id}); //get all venmo_ids
+ 
+        var member_names = {};
+        groupFriends.forEach(function(elem){
+        	member_names[elem.id] = elem.label;
+        });
+        member_names[creatorVenmoId] = Meteor.user().services.venmo.display_name;
+		group.member_names = member_names;
+
+		/*should do some sort of check here to make sure a group with the same names doesn't exist*/
+
+        Groups.insert(group);
+        /*at this point re route to the home page. this can change to a groups page or whatever*/
+        /*Router.go('/');*/
+    },
 	'click .delete-friend': function(event) {
 		var id = $(event.target).parents("li").attr("id");
-		var arr = Session.get("selectedFriends");
+		var arr = Session.get("groupFriends");
 		/* Pretty disgusting way to "delete" something, sorry I was in a hurry. */
 		var new_arr = [];
 		arr.forEach(function(elem){
@@ -303,7 +329,7 @@ Template.CreateGroup.events({
 				new_arr.push(elem);
 			}
 		});
-		Session.set("selectedFriends", new_arr);
+		Session.set("groupFriends", new_arr);
 	}
 });
 

@@ -6,6 +6,11 @@ purchases: {created: [], invited: []}
 _id: hash NOTE: this is our user _id
 venmo_friends: [{user1}, {user2}]
 
+===Groups Schema===
+_id: hash
+title: ""
+members: [_id...] NOTE: was deciding between venmo ids and _id. went with _id because grants us access to more info if needed
+
 
 ===Purchase Schema===
 id: hash
@@ -35,8 +40,13 @@ meteorUsers = function() {
     return Meteor.users
 }
 
+groupsDatabase = function(){
+    return Mongo.Collection("groups");
+}
+
 Purchases = purchasesDatabase();
 Friends = friendsDatabase();
+Groups = groupsDatabase();
 Users = meteorUsers();
 
 if (Meteor.isServer) {
@@ -60,6 +70,14 @@ if (Meteor.isServer) {
       this.ready();
     }
     
+  });
+
+  Meteor.publish('groups', function(){
+    if (this.userID){
+      return Groups.find({_id: this.userID});
+    }else{
+      this.ready();
+    }
   });
 
   /* Helper for validating strings. min and max are inclusive.
@@ -130,4 +148,5 @@ if (Meteor.isClient) {
   Meteor.subscribe("purchases");
   Meteor.subscribe("userData");
   Meteor.subscribe("friends");
+  Meteor.subscribe("groups");
 }

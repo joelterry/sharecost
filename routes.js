@@ -32,3 +32,11 @@ Router.route('/purchase/:_id', function () {
   }, {
     name: 'purchase.show'
 });
+
+Router.route('/create/groups', function(){
+  if (Meteor.user()){
+      this.render('CreateGroup');
+  }else{
+      this.redirect('/login');
+  }
+})

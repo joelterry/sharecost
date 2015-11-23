@@ -140,11 +140,18 @@ if (Meteor.isServer){
 		/*add a group to a user's groups field. pass in group id as argument and array of venmo_ids in group*/
 		'add_group': function(gid, vids){
 			var ids = Meteor.call("venmo_ids_to_ids", vids);
-			console.log(ids);
 			ids.forEach(function(sid){
 				Users.update({_id: sid}, {$push:{'groups': gid}});
 			});
 			return ids;
+		},
+		'retrieve_groups': function(gids){
+			var groups = [];
+			gids.forEach(function(gid){
+				console.log(Groups.find({_id: gid}));
+				groups.push(Groups.find({_id: gid}));
+			});
+			return groups;
 		},
 		/* Called once a purchase has been unanimously approved, and attempts to
 		 * process all payments at once. Checks if members have already paid,

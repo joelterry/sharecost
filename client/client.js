@@ -75,19 +75,31 @@ Template.create.onRendered(function() {
 		} 
 	});
 	// Session.set("selectedGroups",[]);
-	// var groups = Groups.find
+	// var groupIDs = Meteor.user().groups;
+	// Meteor.call('retrieve_groups', groupIDs, function(err, res){
+	// 	if (err){
+	// 		console.log("FUCK");
+	// 	}else{
+	// 		var auto_groups = res.map(function(group){
+	// 			return {
+	// 				'label': group.title,
+	// 				'id': group._id
+	// 			}
+	// 		});
+	// 	}
+	// });
 	// /* jQuery UI autocomplete --> groups*/
 	// $("#groups-autocomplete").autocomplete({
-	// 	source: auto_friends,
+	// 	source: auto_groups,
 	// 	focus: function( event, ui ) {
-	// 		$("#friends-autocomplete").val( ui.item.label );
+	// 		$("#groups-autocomplete").val( ui.item.label);
 	// 		return false;
 	// 	},
 	// 	select: function( event, ui ) {
-	// 		var arr = Session.get("selectedFriends");
+	// 		var arr = Session.get("selectedGroups");
 	// 		arr.push(ui.item);
-	// 		Session.set("selectedFriends", arr);
-	// 		$("#friends-autocomplete").val('');
+	// 		Session.set("selectedGroups", arr);
+	// 		$("#groups-autocomplete").val('');
 	// 		return false;
 	// 	} 
 	// });
@@ -187,6 +199,16 @@ Template.create.events({
 			if (!$("li").first().attr("id") != "me") {
 				$("#selected-friends").prepend("<li id='me' class = 'added-friend'> <div class='label-name'>Me</div> <input type='text' class='cost-share form-control'></li><div id='center'></div>");
 			}
+		}
+	},
+	'click .group-checkbox': function(event) {
+		if ($(event.target).prop("checked")) {
+			$('.select-friends').hide();
+			$('.select-group').show();
+		}
+		else {
+			$('.select-group').hide();
+			$('.select-friends').show();
 		}
 	}
 });

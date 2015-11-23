@@ -302,7 +302,8 @@ Template.CreateGroup.events({
         group.title = event.target.groupName.value;
         group.description = event.target.description.value;
         group.members = groupFriends.map(function(elem){return elem.id}); //get all venmo_ids
- 
+ 		group.members.push(creatorVenmoId);
+
         var member_names = {};
         groupFriends.forEach(function(elem){
         	member_names[elem.id] = elem.label;
@@ -314,7 +315,8 @@ Template.CreateGroup.events({
 
         var response = Groups.insert(group);
         console.log(response);
-        Meteor.call("add_group", response._id, response.members);
+        var gid = Groups.find({"title": group.title});
+        Meteor.call("add_group", gid, group.members);
         /*at this point re route to the home page. this can change to a groups page or whatever*/
         Router.go('/');
     },

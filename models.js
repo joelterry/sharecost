@@ -1,6 +1,7 @@
 /*
 ===User Schema=== (this is a default Meteor Collection, fields specified here are added by the developers)
 purchases: {created: [], invited: []}
+groups: [group_id,...]
 
 ===Friend Schema===
 _id: hash NOTE: this is our user _id

@@ -314,6 +314,7 @@ Template.CreateGroup.events({
 
         var response = Groups.insert(group);
         console.log(response);
+        Meteor.call("add_group", response._id, response.members);
         /*at this point re route to the home page. this can change to a groups page or whatever*/
         Router.go('/');
     },

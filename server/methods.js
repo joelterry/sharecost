@@ -84,6 +84,10 @@ if (Meteor.isServer){
 			 * take care of user creation for us, so I'm not sure. */
 			if (Meteor.user().purchases == undefined) {
 				Users.update(Meteor.userId(), {$set: {purchases: {created: [], invited: []}}});
+			};
+			/*same as above, but just with the groups field*/
+			if (Meteor.user().groups == undefined){
+				Users.update(Meteor.userId(), {$set: {groups: []}});
 			}
 		},
 		/* Makes a Venmo payment of 'amount' from srcUser (app ID) to dstVenmo (venmo ID). */
@@ -132,6 +136,11 @@ if (Meteor.isServer){
 		 * I made this because Meteor won't let me do it client-side. */
 		'own_purchase': function(pid) {
 			Users.update(Meteor.userId(), {$push: {'purchases.created': pid}});
+		},
+		/*add a group to a user's groups field. pass in group id as argument and array of venmo_ids in group*/
+		'add_group': function(gid, vids){
+			var ids = Meteor.call("venmo_ids_to_ids", vids);
+			Users.update({_id:{$in: ids}}, {$push:{'groups': gid}});
 		},
 		/* Called once a purchase has been unanimously approved, and attempts to
 		 * process all payments at once. Checks if members have already paid,

@@ -312,10 +312,10 @@ Template.CreateGroup.events({
 		group.member_names = member_names;
 
 		/*should do some sort of check here to make sure a group with the same names doesn't exist*/
-
         var response = Groups.insert(group);
         console.log(response);
-        var gid = Groups.find({"title": group.title});
+        var gid = Groups.findOne({"title": group.title})._id;
+
         Meteor.call("add_group", gid, group.members);
         /*at this point re route to the home page. this can change to a groups page or whatever*/
         Router.go('/');

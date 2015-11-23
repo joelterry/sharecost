@@ -103,7 +103,6 @@ Template.create.events({
 		$(event.target).find("li").each(function() {
 			if (!event.target.unevenSplit.checked) {
 				if ($(this).attr("id") != "me") {
-					console.log( "name: " + $(this).find(".label-name").text() + " share: " + $(this).find(".cost-share").val() );
 					purch.split[$(this).attr("id")] = Number($(this).find(".cost-share").val());
 				}
 			}
@@ -117,7 +116,6 @@ Template.create.events({
 		else {
 			purch.split[purch.creator] = Number($("#me").find(".cost-share").val());
 		}
-		console.log(purch.split);
 
 		Meteor.call("check_purchase", purch, function(err, res) {
 			if (res.length > 0) {
@@ -128,13 +126,19 @@ Template.create.events({
 				/* Add the purchase ID to the creator's list of invited members.
 				 * If an invited venmo member isn't a member of ShareCost, then
 				 * abort, and remove the purchase. */
-				Meteor.call("send_purchase", pid, purch.members, function(error, result) {
-					if (error) {
+				Meteor.call("send_purchase", pid, purch, function(error, result) {
+					if (result.length != 0) {
 						Purchases.remove(pid);
-						alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
+						var pending_purchase = {"purchase" : purch, "pending_members" : []};
+						var pending_id = PendingPurchases.insert(pending_purchase);
+						for (i = 0; i < result.length; i++) {
+							PendingUsers.upsert(result[i], {$push: {"purchases": pending_id}});
+							PendingPurchases.upsert(pending_id, {$push: {"pending_members" : result[i]}});
+						}
+						//alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
 					} else {
 						/* Add the purchase ID to the creator's list of created purchases */
-						Meteor.call("own_purchase", pid);
+						Meteor.call("own_purchase", pid, Meteor.userId());
 						Router.go('purchase.show', {_id: pid});
 					}
 				});

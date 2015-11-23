@@ -35,9 +35,19 @@ meteorUsers = function() {
     return Meteor.users
 }
 
+pendingDatabase = function() {
+	return new Mongo.Collection("pending_users");
+}
+
+pendingPurchasesDatabase = function() {
+	return new Mongo.Collection("pending_purchases");
+}
+
 Purchases = purchasesDatabase();
 Friends = friendsDatabase();
 Users = meteorUsers();
+PendingUsers = pendingDatabase();
+PendingPurchases = pendingPurchasesDatabase();
 
 if (Meteor.isServer) {
   /* Server publishes all purchases with current user as a member */
@@ -60,6 +70,14 @@ if (Meteor.isServer) {
       this.ready();
     }
     
+  });
+
+  Meteor.publish("pendingUsers", function () {
+    this.ready();
+  });
+
+  Meteor.publish("pendingPurchases", function () {
+    this.ready();
   });
 
   /* Helper for validating strings. min and max are inclusive.
@@ -130,4 +148,6 @@ if (Meteor.isClient) {
   Meteor.subscribe("purchases");
   Meteor.subscribe("userData");
   Meteor.subscribe("friends");
+  Meteor.subscribe("pendingUsers");
+  Meteor.subscribe("pendingPurchases");
 }

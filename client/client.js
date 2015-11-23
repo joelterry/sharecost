@@ -135,7 +135,8 @@ Template.create.events({
 							PendingUsers.upsert(result[i], {$push: {"purchases": pending_id}});
 							PendingPurchases.upsert(pending_id, {$push: {"pending_members" : result[i]}});
 						}
-						//alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
+						alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
+						Router.go("/");
 					} else {
 						/* Add the purchase ID to the creator's list of created purchases */
 						Meteor.call("own_purchase", pid, Meteor.userId());

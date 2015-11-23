@@ -1,10 +1,7 @@
 describe('Collections', function () {
 
-  it('there is 1 current purchases', function () {
-    expect(Purchases.find().count()).toBeGreaterThan(0);
-  });
-
   it('there are no friends', function () {
+    Friends.remove({});
   	expect(Friends.find().count()).toBe(0);
   });
 

@@ -23,7 +23,7 @@ venmo_responses: { }  NOTE: should we have this?
 messages: [message, ...]
 */
 
-friendsDatabase = function() {
+/*friendsDatabase = function() {
     return new Mongo.Collection("friends");
 }
 
@@ -47,7 +47,12 @@ Purchases = purchasesDatabase();
 Friends = friendsDatabase();
 Users = meteorUsers();
 PendingUsers = pendingDatabase();
-PendingPurchases = pendingPurchasesDatabase();
+PendingPurchases = pendingPurchasesDatabase();*/
+Purchases = new Mongo.Collection("purchases");
+Friends = new Mongo.Collection("friends");
+Users = Meteor.users;
+PendingUsers = new Mongo.Collection("pending_users");
+PendingPurchases = new Mongo.Collection("pending_purchases");
 
 if (Meteor.isServer) {
   /* Server publishes all purchases with current user as a member */

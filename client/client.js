@@ -59,7 +59,7 @@ Template.create.onRendered(function() {
 			'icon': elem.profile_picture_url
 		}
 	});
-	/* jQuery UI autocomplete */
+	/* jQuery UI autocomplete --> friends*/
 	$("#friends-autocomplete").autocomplete({
 		source: auto_friends,
 		focus: function( event, ui ) {
@@ -74,6 +74,24 @@ Template.create.onRendered(function() {
 			return false;
 		} 
 	});
+	// Session.set("selectedGroups",[]);
+	// var groups = Groups.find
+	// /* jQuery UI autocomplete --> groups*/
+	// $("#groups-autocomplete").autocomplete({
+	// 	source: auto_friends,
+	// 	focus: function( event, ui ) {
+	// 		$("#friends-autocomplete").val( ui.item.label );
+	// 		return false;
+	// 	},
+	// 	select: function( event, ui ) {
+	// 		var arr = Session.get("selectedFriends");
+	// 		arr.push(ui.item);
+	// 		Session.set("selectedFriends", arr);
+	// 		$("#friends-autocomplete").val('');
+	// 		return false;
+	// 	} 
+	// });
+
 });
 
 Template.create.events({
@@ -284,6 +302,7 @@ Template.CreateGroup.onRendered(function(){
 			return false;
 		} 
 	});
+
 });
 
 Template.CreateGroup.helpers({

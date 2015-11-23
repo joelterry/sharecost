@@ -19,6 +19,9 @@ Template.login.events({
 Template.home.events({
 	'click #create': function(event) {
 		Router.go('/create');
+	},
+	'click #createGroup': function(event){
+		Router.go('/create/groups');
 	}
 });
 
@@ -56,7 +59,7 @@ Template.create.onRendered(function() {
 			'icon': elem.profile_picture_url
 		}
 	});
-	/* jQuery UI autocomplete */
+	/* jQuery UI autocomplete --> friends*/
 	$("#friends-autocomplete").autocomplete({
 		source: auto_friends,
 		focus: function( event, ui ) {
@@ -71,8 +74,25 @@ Template.create.onRendered(function() {
 			return false;
 		} 
 	});
-});
+	// Session.set("selectedGroups",[]);
+	// var groups = Groups.find
+	// /* jQuery UI autocomplete --> groups*/
+	// $("#groups-autocomplete").autocomplete({
+	// 	source: auto_friends,
+	// 	focus: function( event, ui ) {
+	// 		$("#friends-autocomplete").val( ui.item.label );
+	// 		return false;
+	// 	},
+	// 	select: function( event, ui ) {
+	// 		var arr = Session.get("selectedFriends");
+	// 		arr.push(ui.item);
+	// 		Session.set("selectedFriends", arr);
+	// 		$("#friends-autocomplete").val('');
+	// 		return false;
+	// 	} 
+	// });
 
+});
 
 Template.create.events({
 	/* Purchase creation via form submission */
@@ -180,13 +200,11 @@ Template.create.helpers({
 	}
 });
 
-
 Template.purchaseProposal.helpers({
 	'getPurchaseRoute': function() {
 		return "/purchase/" + this._id;
 	}
 });
-
 
 Template.ShowPurchase.onRendered(function(){
     Session.set('currentPurchaseID', this._id);
@@ -256,6 +274,89 @@ Template.ShowPurchase.events({
     	Session.set('reply', undefined);
     }
 });
+
+/* note: copied code from above...should change eventually */
+Template.CreateGroup.onRendered(function(){
+	Session.set("groupFriends", []);
+	var friends = Friends.findOne(Meteor.userId()).venmo_friends;
+	var auto_friends = friends.map(function(elem) {
+		return {
+			/* Venmo id, not app id */
+			'id': elem.id,
+			'label': elem.display_name,
+			'icon': elem.profile_picture_url
+		}
+	});
+	/* jQuery UI autocomplete */
+	$("#friends-autocomplete").autocomplete({
+		source: auto_friends,
+		focus: function( event, ui ) {
+			$("#friends-autocomplete").val( ui.item.label );
+			return false;
+		},
+		select: function( event, ui ) {
+			var arr = Session.get("groupFriends");
+			arr.push(ui.item);
+			Session.set("groupFriends", arr);
+			$("#friends-autocomplete").val('');
+			return false;
+		} 
+	});
+
+});
+
+Template.CreateGroup.helpers({
+	'groupFriends': function(){
+		return Session.get("groupFriends");
+	}
+});
+
+Template.CreateGroup.events({
+	'submit': function(event) {
+        event.preventDefault();
+
+        var groupFriends = Session.get("groupFriends");
+        var creatorVenmoId = Meteor.user().services.venmo.id;
+        var group = {};
+        group.title = event.target.groupName.value;
+        group.description = event.target.description.value;
+        group.members = groupFriends.map(function(elem){return elem.id}); //get all venmo_ids
+ 		group.members.push(creatorVenmoId);
+
+        var member_names = {};
+        groupFriends.forEach(function(elem){
+        	member_names[elem.id] = elem.label;
+        });
+        member_names[creatorVenmoId] = Meteor.user().services.venmo.display_name;
+		group.member_names = member_names;
+
+		/*should do some sort of check here to make sure a group with the same names doesn't exist*/
+        var response = Groups.insert(group);
+        Meteor.call("add_group", response, group.members, function(err, res){
+        	if (err) {
+				Groups.remove(response);
+				alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
+			} else {
+				/* Add the purchase ID to the creator's list of created purchases */
+				console.log(res);
+				Router.go('/');
+			}
+        });
+    },
+	'click .delete-friend': function(event) {
+		var id = $(event.target).parents("li").attr("id");
+		var arr = Session.get("groupFriends");
+		/* Pretty disgusting way to "delete" something, sorry I was in a hurry. */
+		var new_arr = [];
+		arr.forEach(function(elem){
+			if (elem.id != id) {
+				new_arr.push(elem);
+			}
+		});
+		Session.set("groupFriends", new_arr);
+	}
+});
+
 
 /*Global Events*/
 var events = {

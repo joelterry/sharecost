@@ -27,16 +27,18 @@ describe("Navigation tests", function() {
             expect(Router.current().route.path()).toEqual("/create");
         }, 500);
         $(".cancel").trigger("click");
-        setTimeout(function() {
+        setTimeout(function(done) {
             expect(Router.current().route.path()).toEqual("/");
+            done();
         }, 500);
     });
 
     it("click logout", function() {
         expect(Router.current().route.path()).toEqual("/");
         $("#logout").trigger("click");
-        setTimeout(function() {
+        setTimeout(function(done) {
             expect(Router.current().route.path()).toEqual("/login");
+            done();
         }, 500);
     });
 });

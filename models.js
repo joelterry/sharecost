@@ -1,10 +1,18 @@
 /*
 ===User Schema=== (this is a default Meteor Collection, fields specified here are added by the developers)
 purchases: {created: [], invited: []}
+groups: [group_id,...]
 
 ===Friend Schema===
 _id: hash NOTE: this is our user _id
 venmo_friends: [{user1}, {user2}]
+
+===Groups Schema===
+_id: hash
+Name: ""
+Description: ""
+members: [venmo_id,...]
+member_names: [venmo_id: name,...] NOTE: for display purposes
 
 
 ===Purchase Schema===
@@ -35,8 +43,13 @@ meteorUsers = function() {
     return Meteor.users
 }
 
+groupsDatabase = function(){
+    return new Mongo.Collection("groups");
+}
+
 Purchases = purchasesDatabase();
 Friends = friendsDatabase();
+Groups = groupsDatabase();
 Users = meteorUsers();
 
 if (Meteor.isServer) {
@@ -60,6 +73,14 @@ if (Meteor.isServer) {
       this.ready();
     }
     
+  });
+
+  Meteor.publish('groups', function(){
+    if (this.userID){
+      return Groups.find();
+    }else{
+      this.ready();
+    }
   });
 
   /* Helper for validating strings. min and max are inclusive.
@@ -130,4 +151,5 @@ if (Meteor.isClient) {
   Meteor.subscribe("purchases");
   Meteor.subscribe("userData");
   Meteor.subscribe("friends");
+  Meteor.subscribe("groups");
 }

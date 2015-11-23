@@ -22,6 +22,7 @@
 		<div id = "center" class = "col-xs-10 center-block text-center home-content">
 			{{#if currentUser}}
 				<p><button id="create" class="btn btn-default">Create a Proposal</button></p>
+				<p><button id="createGroup" class="btn btn-default">Create a Group</button></p>
 				<div class = "col-xs-5">
 					<h3>Your purchase proposals...</h3>
 					<ul class = "purchase-list">
@@ -99,6 +100,10 @@
 				<div class = "form-group select-friends">
 					<label class = "control-label" for="friends-autocomplete">Add Friends:</label>
 					<input type="text" class = "form-control" name="friends" id="friends-autocomplete">
+				</div>
+				<div class = "form-group select-friends">
+					<label class = "control-label" for="groups-autocomplete">Add Group:</label>
+					<input type="text" class = "form-control" name="groups" id="groups-autocomplete">
 				</div>
 				<a href="/" class="cancel btn btn-default">Cancel</a>
 				<input class = "btn btn-default" type="submit" value="Submit">
@@ -225,5 +230,41 @@
 			</form>
 		</div>
 		<div class = "row footer"></div>
+	</div>
+</template>
+
+<template name="CreateGroup">
+	<div class = "row text-center">
+		<h2>Create a Group</h2>
+	</div>
+	<div class = "row">
+		<div id = "center" class = "proposal-form col-xs-10 center-block">
+			<form class="new-purchase form-horizontal" role = "form">
+				<div class="form-group">
+					<label class = "control-label" for="title">Group Name:</label>
+					<input type="text" name = "groupName" class="form-control" id="groupName">
+				</div>
+				<div class="form-group">
+					<label class = "control-label" for="description">Description:</label>
+					<textarea name = "description" class="form-control" id="description"></textarea>
+				</div>
+				<div class = "form-group">
+					<ul id="selected-friends">
+						{{#each groupFriends}}
+							<li id="{{id}}" class = "added-friend">
+								<div class="label-name">{{label}}</div>
+								<button type="button" class="delete-friend btn btn-default">Remove</button> </li>
+								<div id="center"></div>
+						{{/each}}
+					</ul>
+				</div>
+				<div class = "form-group select-friends">
+					<label class = "control-label" for="friends-autocomplete">Add Friends:</label>
+					<input type="text" class = "form-control" name="friends" id="friends-autocomplete">
+				</div>
+				<a href="/" class="cancel btn btn-default">Cancel</a>
+				<input class = "btn btn-default" type="submit" value="Submit" id="groupSubmit">
+			</form>
+		</div>
 	</div>
 </template>

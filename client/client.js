@@ -313,12 +313,16 @@ Template.CreateGroup.events({
 
 		/*should do some sort of check here to make sure a group with the same names doesn't exist*/
         var response = Groups.insert(group);
-        console.log(response);
-        var gid = Groups.findOne({"title": group.title})._id;
-
-        Meteor.call("add_group", gid, group.members);
-        /*at this point re route to the home page. this can change to a groups page or whatever*/
-        Router.go('/');
+        Meteor.call("add_group", response, group.members, function(err, res){
+        	if (err) {
+				Groups.remove(response);
+				alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
+			} else {
+				/* Add the purchase ID to the creator's list of created purchases */
+				console.log(res);
+				Router.go('/');
+			}
+        });
     },
 	'click .delete-friend': function(event) {
 		var id = $(event.target).parents("li").attr("id");

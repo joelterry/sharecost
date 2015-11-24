@@ -76,7 +76,7 @@ if (Meteor.isServer) {
   });
 
   Meteor.publish('groups', function(){
-    if (this.userID){
+    if (this.userId){
       return Groups.find();
     }else{
       this.ready();

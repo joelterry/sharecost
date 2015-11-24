@@ -95,7 +95,7 @@ if (Meteor.isServer){
 			this.unblock(); //allows other Methods to run, since we're doing HTTP.post() synchronously
 			var user = Users.findOne(srcUser);
 			if (!user) {
-				throw new Meteor.Error("Invalid user");
+				throw new Meteor.Error(403, "Invalid user");
 			}
 			var venmo_id = dstVenmo;
 			var access = user.services.venmo.accessToken;
@@ -144,14 +144,6 @@ if (Meteor.isServer){
 				Users.update({_id: sid}, {$push:{'groups': gid}});
 			});
 			return ids;
-		},
-		'retrieve_groups': function(gids){
-			var groups = [];
-			gids.forEach(function(gid){
-				console.log(Groups.find({_id: gid}));
-				groups.push(Groups.find({_id: gid}));
-			});
-			return groups;
 		},
 		/* Called once a purchase has been unanimously approved, and attempts to
 		 * process all payments at once. Checks if members have already paid,

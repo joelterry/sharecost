@@ -1,7 +1,7 @@
 describe('Collections', function () {
 
-  it('there is 1 current purchases', function () {
-    expect(Purchases.find().count()).toBeGreaterThan(0);
+  it('there are 0 current purchases', function () {
+    expect(Purchases.find().count()).toEqual(0);
   });
 
   it('there are no friends', function () {
@@ -23,8 +23,7 @@ describe('Collections', function () {
     purch.member_names = "temp";
 
     it('throws an error for invalid purchase', function (){
-    	expect(function () {
-    		valid_purchase(purch)}).toThrow();
+    	expect(function () { valid_purchase(purch)}).toThrow();
     });
 
     it('accepts a valid purchase', function (){

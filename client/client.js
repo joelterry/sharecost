@@ -129,14 +129,25 @@ Template.create.events({
 				Meteor.call("send_purchase", pid, purch, function(error, result) {
 					if (result.length != 0) {
 						Purchases.remove(pid);
-						var pending_purchase = {"purchase" : purch, "pending_members" : []};
-						var pending_id = PendingPurchases.insert(pending_purchase);
+						var pendingNames = [];
 						for (i = 0; i < result.length; i++) {
-							PendingUsers.upsert(result[i], {$push: {"purchases": pending_id}});
-							PendingPurchases.upsert(pending_id, {$push: {"pending_members" : result[i]}});
+							for (j = 0; j < selected.length; j++) {
+								if (result[i] == selected[j].id) {
+									pendingNames.push(selected[j].label);
+									break;
+								}
+							}
 						}
-						alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
-						Router.go("/");
+						var confirmation = confirm("Some of the invited friends haven't signed up for ShareCost. Place a pending proposal that will register once all users have signed up?\n\nFriends not on ShareCost:\n" + pendingNames.join("\n"));
+						if (confirmation) {
+							var pending_purchase = {"purchase" : purch, "pending_members" : []};
+							var pending_id = PendingPurchases.insert(pending_purchase);
+							for (i = 0; i < result.length; i++) {
+								PendingUsers.upsert(result[i], {$push: {"purchases": pending_id}});
+								PendingPurchases.upsert(pending_id, {$push: {"pending_members" : result[i]}});
+							}
+							Router.go("/");
+						}
 					} else {
 						/* Add the purchase ID to the creator's list of created purchases */
 						Meteor.call("own_purchase", pid, Meteor.userId());

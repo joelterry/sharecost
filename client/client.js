@@ -75,34 +75,30 @@ Template.create.onRendered(function() {
 		} 
 	});
 	// Session.set("selectedGroups",[]);
-	// var groupIDs = Meteor.user().groups;
-	// Meteor.call('retrieve_groups', groupIDs, function(err, res){
-	// 	if (err){
-	// 		console.log("FUCK");
-	// 	}else{
-	// 		var auto_groups = res.map(function(group){
-	// 			return {
-	// 				'label': group.title,
-	// 				'id': group._id
-	// 			}
-	// 		});
-	// 	}
-	// });
-	// /* jQuery UI autocomplete --> groups*/
-	// $("#groups-autocomplete").autocomplete({
-	// 	source: auto_groups,
-	// 	focus: function( event, ui ) {
-	// 		$("#groups-autocomplete").val( ui.item.label);
-	// 		return false;
-	// 	},
-	// 	select: function( event, ui ) {
-	// 		var arr = Session.get("selectedGroups");
-	// 		arr.push(ui.item);
-	// 		Session.set("selectedGroups", arr);
-	// 		$("#groups-autocomplete").val('');
-	// 		return false;
-	// 	} 
-	// });
+	var groupIDs = Meteor.user().groups;
+	var auto_groups = groupIDs.map(function(id) {
+		var group = Groups.findOne({_id: id});
+		return {
+			/* Venmo id, not app id */
+			'id': id,
+			'label': group.title
+		}
+	});
+	/* jQuery UI autocomplete --> groups*/
+	$("#groups-autocomplete").autocomplete({
+	 	source: auto_groups,
+	 	focus: function( event, ui ) {
+	 		$("#groups-autocomplete").val( ui.item.label);
+	 		return false;
+	 	},
+	 	select: function( event, ui ) {
+	 		var arr = Session.get("selectedGroups");
+	 		arr.push(ui.item);
+	 		Session.set("selectedGroups", arr);
+	 		$("#groups-autocomplete").val('');
+	 		return false;
+	 	} 
+	});
 
 });
 

@@ -79,7 +79,7 @@ Template.create.onRendered(function() {
 	var auto_groups = groupIDs.map(function(id) {
 		var group = Groups.findOne({_id: id});
 		return {
-			/* Venmo id, not app id */
+			/* group id*/
 			'id': id,
 			'label': group.title
 		}
@@ -107,13 +107,20 @@ Template.create.events({
 	'submit': function(event) {
 		event.preventDefault();
 
-		var selected = Session.get("selectedFriends");
 		var purch = {};
+
+		if (event.target.groups.checked){
+			var memberVenmoIds = Session.get("selectedGroups").members
+			purch.members = memberVenmoIds;
+		}else{
+			var selected = Session.get("selectedFriends");
+			purch.members = selected.map(function(elem){return elem.id});
+		}
+
 		purch.title = event.target.title.value;
 		purch.description = event.target.description.value;
 		purch.cost = Number(event.target.cost.value);
 		purch.creator = Meteor.user().services.venmo.id;
-		purch.members = selected.map(function(elem){return elem.id});
 		purch.accepted = [];
 		purch.rejected = [];
 		purch.paid = [];

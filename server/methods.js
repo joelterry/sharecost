@@ -153,20 +153,29 @@ if (Meteor.isServer){
 			var member = Users.findOne({'services.venmo.id': memberVID});
 			//change to
 			//var member = Users.findOne({'services.venmo.id': group.members[0]});
-			var memberGroupIDs = member.groups;
-			memberGroupIDs.forEach(function(gid){
+			var memberGIDs = member.groups;
+			memberGIDs.forEach(function(gid){
 				var group = Groups.findOne({_id: gid});
-				var groupIDs = group.members
-				if (groupIDs.length == len){
-					groupIDs.forEach(function(id){
-						if (!vids.contains(id)){
-							//check if vids contains this id...if it does not then
-							return false;
+				var groupVIDs = group.members
+				if (groupVIDs.length == len){
+					var sum = 0;
+					groupVIDs.forEach(function(vid){
+						var counter = 0;
+						while (counter <= len - 1){
+							if (vids[counter] == vid){
+								sum++;
+							}
+							counter++;
 						}
-					})
+					});
+					if (sum == len){
+						return true;
+					}else{
+						return false;
+					}
 				}
 			});
-			return true;
+			return false;
 		},
 		/* Called once a purchase has been unanimously approved, and attempts to
 		 * process all payments at once. Checks if members have already paid,

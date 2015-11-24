@@ -128,6 +128,7 @@ Template.create.events({
 		purch.created_at = new Date();
 		purch.messages = [];
 
+		//check to see if this needs to change if it is involving a group
 		var member_names = {};
 		selected.forEach(function(elem){
 			member_names[elem.id] = elem.label;
@@ -321,7 +322,18 @@ Template.CreateGroup.onRendered(function(){
 		},
 		select: function( event, ui ) {
 			var arr = Session.get("groupFriends");
-			arr.push(ui.item);
+			var bool = false;
+			arr.forEach(function(friend){
+				if (friend.id == ui.item.id){
+					alert("This person already exists in the group. You cannot add duplicates.");
+					bool = true;
+					return false;
+				}
+			});
+			if (!bool){
+				arr.push(ui.item);
+			}
+			console.log(arr);
 			Session.set("groupFriends", arr);
 			$("#friends-autocomplete").val('');
 			return false;

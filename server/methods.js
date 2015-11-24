@@ -145,6 +145,29 @@ if (Meteor.isServer){
 			});
 			return ids;
 		},
+		/* given a list of members venmoIDs, ensure no group with same members exists.
+		*  use first group member to check against the groups that they are included in */
+		'check_group_exists': function(vids){
+			var len = vids.length;
+			var memberVID = vids[0];
+			var member = Users.findOne({'services.venmo.id': memberVID});
+			//change to
+			//var member = Users.findOne({'services.venmo.id': group.members[0]});
+			var memberGroupIDs = member.groups;
+			memberGroupIDs.forEach(function(gid){
+				var group = Groups.findOne({_id: gid});
+				var groupIDs = group.members
+				if (groupIDs.length == len){
+					groupIDs.forEach(function(id){
+						if (!vids.contains(id)){
+							//check if vids contains this id...if it does not then
+							return false;
+						}
+					})
+				}
+			});
+			return true;
+		},
 		/* Called once a purchase has been unanimously approved, and attempts to
 		 * process all payments at once. Checks if members have already paid,
 		 * so can hypothetically be called more than once. */

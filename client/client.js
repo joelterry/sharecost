@@ -348,18 +348,28 @@ Template.CreateGroup.events({
         member_names[creatorVenmoId] = Meteor.user().services.venmo.display_name;
 		group.member_names = member_names;
 
-		/*should do some sort of check here to make sure a group with the same names doesn't exist*/
-        var response = Groups.insert(group);
-        Meteor.call("add_group", response, group.members, function(err, res){
-        	if (err) {
-				Groups.remove(response);
-				alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
-			} else {
-				/* Add the purchase ID to the creator's list of created purchases */
-				console.log(res);
-				Router.go('/');
+		/*check if group already exists*/
+		Meteor.call("check_group_exists", group.members, function(err, res){
+			if (err){
+				alert("Something went wrong with creating the group");
+			}else{
+				if (res == true){
+					alert("A group consisting of the same members already exists.");
+				}else if (res == false){
+					var response = Groups.insert(group);
+			        Meteor.call("add_group", response, group.members, function(err, res){
+			        	if (err) {
+							Groups.remove(response);
+							alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
+						} else {
+							/* Add the purchase ID to the creator's list of created purchases */
+							console.log(res);
+							Router.go('/');
+						}
+			        });
+				}
 			}
-        });
+		});
     },
 	'click .delete-friend': function(event) {
 		var id = $(event.target).parents("li").attr("id");

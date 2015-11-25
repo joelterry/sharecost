@@ -108,16 +108,14 @@ Template.create.events({
 		event.preventDefault();
 
 		var purch = {};
-
-		// if (event.target.groups.checked){
-		// 	var memberVenmoIds = Session.get("selectedGroups").members
-		// 	purch.members = memberVenmoIds;
-		// }else{
-		// 	var selected = Session.get("selectedFriends");
-		// 	purch.members = selected.map(function(elem){return elem.id});
-		// }
-		var selected = Session.get("selectedFriends");
-		purch.members = selected.map(function(elem){return elem.id});
+	
+		if (Session.get("groupChecked")){
+			purch.members = Session.get("selectedGroups").members;
+			console.log(purch.members);
+		}else{
+			var selected = Session.get("selectedFriends");
+			purch.members = selected.map(function(elem){return elem.id});
+		}
 		purch.title = event.target.title.value;
 		purch.description = event.target.description.value;
 		purch.cost = Number(event.target.cost.value);
@@ -210,15 +208,18 @@ Template.create.events({
 		}
 	},
 	'click .group-checkbox': function(event) {
+		Session.set("groupChecked")
 		if ($(event.target).prop("checked")) {
 			$('.select-friends').hide();
 			$('.select-group').show();
 			Session.set('selectedFriends', []);
+			Session.set("groupChecked", true);
 		}
 		else {
 			$('.select-group').hide();
 			$('.select-friends').show();
 			Session.set('selectedGroups', []);
+			Session.set("groupChecked", false);
 		}
 	}
 });

@@ -109,14 +109,15 @@ Template.create.events({
 
 		var purch = {};
 
-		if (event.target.groups.checked){
-			var memberVenmoIds = Session.get("selectedGroups").members
-			purch.members = memberVenmoIds;
-		}else{
-			var selected = Session.get("selectedFriends");
-			purch.members = selected.map(function(elem){return elem.id});
-		}
-
+		// if (event.target.groups.checked){
+		// 	var memberVenmoIds = Session.get("selectedGroups").members
+		// 	purch.members = memberVenmoIds;
+		// }else{
+		// 	var selected = Session.get("selectedFriends");
+		// 	purch.members = selected.map(function(elem){return elem.id});
+		// }
+		var selected = Session.get("selectedFriends");
+		purch.members = selected.map(function(elem){return elem.id});
 		purch.title = event.target.title.value;
 		purch.description = event.target.description.value;
 		purch.cost = Number(event.target.cost.value);
@@ -333,7 +334,6 @@ Template.CreateGroup.onRendered(function(){
 			if (!bool){
 				arr.push(ui.item);
 			}
-			console.log(arr);
 			Session.set("groupFriends", arr);
 			$("#friends-autocomplete").val('');
 			return false;
@@ -372,6 +372,7 @@ Template.CreateGroup.events({
 			if (err){
 				alert("Something went wrong with creating the group");
 			}else{
+				console.log(res);
 				if (res == true){
 					alert("A group consisting of the same members already exists.");
 				}else if (res == false){

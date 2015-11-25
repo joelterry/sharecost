@@ -149,14 +149,16 @@ if (Meteor.isServer){
 		*  use first group member to check against the groups that they are included in */
 		'check_group_exists': function(vids){
 			var len = vids.length;
+			console.log(vids);
 			var memberVID = vids[0];
 			var member = Users.findOne({'services.venmo.id': memberVID});
-			//change to
-			//var member = Users.findOne({'services.venmo.id': group.members[0]});
+			console.log(member.services.venmo.username);
 			var memberGIDs = member.groups;
+			var exists = false;
 			memberGIDs.forEach(function(gid){
 				var group = Groups.findOne({_id: gid});
 				var groupVIDs = group.members
+				console.log(groupVIDs);
 				if (groupVIDs.length == len){
 					var sum = 0;
 					groupVIDs.forEach(function(vid){
@@ -168,14 +170,14 @@ if (Meteor.isServer){
 							counter++;
 						}
 					});
+					console.log(sum);
 					if (sum == len){
-						return true;
-					}else{
-						return false;
+						console.log("made it");
+						exists = true;
 					}
 				}
 			});
-			return false;
+			return exists;
 		},
 		/* Called once a purchase has been unanimously approved, and attempts to
 		 * process all payments at once. Checks if members have already paid,

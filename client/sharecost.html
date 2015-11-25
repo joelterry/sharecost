@@ -111,13 +111,13 @@
 	<div class = "row proposal">
 		<div class = "row wrapper"><h3><a href={{getPurchaseRoute}}>{{title}}</a> - ${{cost}}</h3></div>
 		<div class = "col-xs-9 left-align">
-			<p class = "wrapper">Created by: {{getCreatorName}}</p>
+			<p class = "wrapperx">Created by: {{getCreatorName}}</p>
 			<p class = "wrapper">{{description}}</p>
 			<div>
 				<p>Accepted:</p>
 				<ul>
 					{{#each getAcceptedNames}}
-						<li class = "wrapper">{{.}}</li>
+						<li class = "wrapperx">{{.}}</li>
 					{{/each}}
 				</ul>
 			</div>
@@ -125,7 +125,7 @@
 				<p>Rejected:</p>
 				<ul>
 					{{#each getRejectedNames}}
-						<li class = "wrapper">{{.}}</li>
+						<li class = "wrapperx">{{.}}</li>
 					{{/each}}
 				</ul>
 			</div>
@@ -133,7 +133,7 @@
 				<p>Pending:</p>
 				<ul>
 					{{#each getPendingNames}}
-						<li class = "wrapper">{{.}}</li>
+						<li class = "wrapperx">{{.}}</li>
 					{{/each}}
 				</ul>
 			</div>

@@ -314,7 +314,7 @@ Template.registerHelper('getProfilePictureUrl', function() {
 });
 
 Template.registerHelper('getCreatorName', function() {
-	return this.member_names[this.creator];
+	return this.member_names[this.creator] + ' ($' + this.split[this.creator].toFixed(2).toString() + ')';
 });
 /* Returns true if the creator of this purchase is logged in. */
 Template.registerHelper('isCreator', function() {
@@ -323,13 +323,13 @@ Template.registerHelper('isCreator', function() {
 Template.registerHelper('getAcceptedNames', function() {
 	var purch = this;
 	return purch.accepted.map(function(elem){
-		return purch.member_names[elem];
+		return purch.member_names[elem] + ' ($' + purch.split[elem].toFixed(2).toString() + ')';
 	});
 });
 Template.registerHelper('getRejectedNames', function() {
 	var purch = this;
 	return purch.rejected.map(function(elem){
-		return purch.member_names[elem];
+		return purch.member_names[elem] + ' ($' + purch.split[elem].toFixed(2).toString() + ')';
 	});
 });
 Template.registerHelper('getPendingNames', function() {
@@ -344,6 +344,6 @@ Template.registerHelper('getPendingNames', function() {
 		}
 	});
 	return pending.map(function(elem){
-		return purch.member_names[elem];
+		return purch.member_names[elem] + ' ($' + purch.split[elem].toFixed(2).toString() + ')';
 	});
 });

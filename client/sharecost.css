@@ -82,6 +82,11 @@
     word-wrap: break-word;
 }
 
+.wrapperx {
+	overflow-x: scroll;
+	white-space: nowrap;
+}
+
 .cost-input {
 	width: 30%;
 }

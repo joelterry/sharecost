@@ -26,13 +26,15 @@ describe("friends test", function() {
 });
 
 describe("payment tests", function() {
+    var payment;
 
     sharedSetup();
     beforeEach(function(done) {
         login(user1);
         Users.insert(user1);
         Meteor.call('after_login', function(error, result) {
-            var payment = Meteor.call('user_pay_user', Meteor.userId(), user2.services.venmo.id, 1, function(error, result) {
+            Meteor.call('user_pay_user', Meteor.userId(), user2.services.venmo.id, 1, function(error, result) {
+                payment = result;
                 done();
             });
         });
@@ -41,6 +43,12 @@ describe("payment tests", function() {
     it("verify payment", function() {
         expect(payment.data.data.payment.status).toEqual('settled');
     });
+
+});
+
+describe("payment tests", function() {
+
+    sharedSetup();
 
     it("verify payment fails without a user logged in", function() {
         logout();

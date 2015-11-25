@@ -1,42 +1,81 @@
-describe("Navigation tests", function() {
-    var user = {};
-    user._id = "ycMSMjwJYdP9eJD4M";
-    user.services = {};
-    user.services.venmo = {};
-    user.services.venmo.id = "1801145244712960593";
-    user.services.venmo.display_name = "Alex Ma";
-    user.services.venmo.profile_picture_url = "http://i.imgur.com/bWUTbHl.png";
-    user.services.venmo.accessToken = "d2cfc976873ef4ba97bc15915c98b5f3bb8ddd17446ffd5f4b53b760dbec6011";
+var user1 = new TestUser('clientasdf', 'user1', 'client1', 'easldk.com');
+
+describe("Click create tests", function() {
 
     beforeEach(function(done) {
-        spyOn(Meteor, "user").and.callFake(function() {
-            return user;
-        });
-        spyOn(Meteor, "userId").and.callFake(function() {
-            return user._id;
-        });
+        login(user1);
         Router.go("/");
         Tracker.afterFlush(done);
     });
 
     beforeEach(waitForRouter);
 
-    it("click create", function() {
-        $("#create").trigger("click");
-        setTimeout(function() {
-            expect(Router.current().route.path()).toEqual("/create");
-        }, 500);
-        $(".cancel").trigger("click");
-        setTimeout(function() {
-            expect(Router.current().route.path()).toEqual("/");
-        }, 500);
+    it("start from homepage", function() {
+        expect(Router.current().route.path()).toEqual("/");
     });
 
-    it("click logout", function() {
+    describe("nested", function() {
+        beforeEach(function(done) {
+            $("#create").trigger("click");
+            Tracker.afterFlush(done);
+        });
+
+        beforeEach(waitForRouter);
+
+        it("click create", function() {
+            expect(Router.current().route.path()).toEqual("/create");
+        });
+
+        describe("click cancel", function() {
+            beforeEach(function(done) {
+                $(".cancel").trigger("click");
+                Tracker.afterFlush(done);
+            });
+
+            it("click cancel", function() {
+                expect(Router.current().route.path()).toEqual("/");
+            });
+        });
+    });
+
+});
+
+describe("Test logout navigation", function() {
+
+    beforeEach(function(done) {
+        login(user1);
+        Router.go("/");
+        Tracker.afterFlush(done);
+    });
+
+    beforeEach(waitForRouter);
+
+    it("start from homepage", function() {
         expect(Router.current().route.path()).toEqual("/");
+    });
+
+});
+
+describe("Logout test", function() {
+    beforeEach(function(done) {
         $("#logout").trigger("click");
-        setTimeout(function() {
+        spyOn(Meteor, "user").and.returnValue(null);
+        spyOn(Meteor, "userId").and.returnValue(null);
+        Router.go("/");
+        Tracker.afterFlush(done);
+    });
+
+    beforeEach(waitForRouter);
+
+    describe("nested", function() {
+        beforeEach(function(done) {
+            Router.go("/login");
+            Tracker.afterFlush(done);
+        });
+        beforeEach(waitForRouter);
+
+        it("click logout", function() {
             expect(Router.current().route.path()).toEqual("/login");
-        }, 500);
+        });
     });
 });

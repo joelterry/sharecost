@@ -83,7 +83,7 @@
 }
 
 .wrapperx {
-	overflow-x: scroll;
+	/*overflow-x: hidden;*/
 	white-space: nowrap;
 }
 

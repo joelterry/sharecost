@@ -391,8 +391,8 @@ Template.CreateGroup.events({
 				}else if (res == false){
 					if (group.members.length == 1){
 						alert("You need to add at least 1 person to the group.");
-					}else if (group.title == ""){
-						alert("You need to include a name for the group.");
+					}else if (group.title == "" || group.title.length > 64){
+						alert("Group title must be between 1 and 64 characters.");
 					}else if (group.description ==""){
 						alert("You need to include a description for the group.");
 					}else{

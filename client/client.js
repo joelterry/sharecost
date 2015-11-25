@@ -19,6 +19,12 @@ Template.login.events({
 Template.home.events({
 	'click #create': function(event) {
 		Router.go('/create');
+	},
+	'click .close-button': function(event) {
+		var remove = confirm("Do you want to delete this proposal? This action cannot be undone");
+		if (remove) {
+			Purchases.remove(this._id);
+		}
 	}
 });
 

@@ -84,6 +84,7 @@ Template.create.onRendered(function() {
 			'label': group.title
 		}
 	});
+	Session.set("groupChecked", false);
 	/* jQuery UI autocomplete --> groups*/
 	$("#groups-autocomplete").autocomplete({
 	 	source: auto_groups,
@@ -108,12 +109,16 @@ Template.create.events({
 		event.preventDefault();
 
 		var purch = {};
-	
+		console.log(Session.get("groupChecked"));
 		if (Session.get("groupChecked")){
-			purch.members = Session.get("selectedGroups").members;
-			console.log(purch.members);
+			var abridgedGroup = Session.get("selectedGroups")[0];
+			var id = abridgedGroup.id;
+			var group = Groups.findOne({_id: id});
+			var selected = group.members;
+			purch.members = selected;
 		}else{
 			var selected = Session.get("selectedFriends");
+			console.log(selected);
 			purch.members = selected.map(function(elem){return elem.id});
 		}
 		purch.title = event.target.title.value;

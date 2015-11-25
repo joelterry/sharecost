@@ -372,21 +372,27 @@ Template.CreateGroup.events({
 			if (err){
 				alert("Something went wrong with creating the group");
 			}else{
-				console.log(res);
 				if (res == true){
 					alert("A group consisting of the same members already exists.");
 				}else if (res == false){
-					var response = Groups.insert(group);
-			        Meteor.call("add_group", response, group.members, function(err, res){
-			        	if (err) {
-							Groups.remove(response);
-							alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
-						} else {
-							/* Add the purchase ID to the creator's list of created purchases */
-							console.log(res);
-							Router.go('/');
-						}
-			        });
+					if (group.members.length == 1){
+						alert("You need to add at least 1 person to the group.");
+					}else if (group.title == ""){
+						alert("You need to include a name for the group.");
+					}else if (group.description ==""){
+						alert("You need to include a description for the group.");
+					}else{
+						var response = Groups.insert(group);
+			        	Meteor.call("add_group", response, group.members, function(err, res){
+				        	if (err) {
+								Groups.remove(response);
+								alert("Group creation failed! Some of the invited friends haven't signed up for ShareCost.");
+							} else {
+								/* Add the purchase ID to the creator's list of created purchases */
+								Router.go('/');
+							}
+				        });
+					}
 				}
 			}
 		});

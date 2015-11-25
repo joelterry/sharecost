@@ -149,16 +149,13 @@ if (Meteor.isServer){
 		*  use first group member to check against the groups that they are included in */
 		'check_group_exists': function(vids){
 			var len = vids.length;
-			console.log(vids);
 			var memberVID = vids[0];
 			var member = Users.findOne({'services.venmo.id': memberVID});
-			console.log(member.services.venmo.username);
 			var memberGIDs = member.groups;
 			var exists = false;
 			memberGIDs.forEach(function(gid){
 				var group = Groups.findOne({_id: gid});
 				var groupVIDs = group.members
-				console.log(groupVIDs);
 				if (groupVIDs.length == len){
 					var sum = 0;
 					groupVIDs.forEach(function(vid){
@@ -170,9 +167,7 @@ if (Meteor.isServer){
 							counter++;
 						}
 					});
-					console.log(sum);
 					if (sum == len){
-						console.log("made it");
 						exists = true;
 					}
 				}

@@ -72,10 +72,21 @@
 	padding: 10px;
 	margin-bottom: 10px;
 	position: relative;
+    padding-right: 75px;
 }
 .purchase-page .proposal-form {
 	margin-top: 32px;
 }
+
+.wrapper {
+    word-wrap: break-word;
+}
+
+.wrapperx {
+	overflow-x: scroll;
+	white-space: nowrap;
+}
+
 .cost-input {
 	width: 30%;
 }

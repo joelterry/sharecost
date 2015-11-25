@@ -103,7 +103,6 @@ Template.create.events({
 		$(event.target).find("li").each(function() {
 			if (!event.target.unevenSplit.checked) {
 				if ($(this).attr("id") != "me") {
-					console.log( "name: " + $(this).find(".label-name").text() + " share: " + $(this).find(".cost-share").val() );
 					purch.split[$(this).attr("id")] = Number($(this).find(".cost-share").val());
 				}
 			}
@@ -117,7 +116,6 @@ Template.create.events({
 		else {
 			purch.split[purch.creator] = Number($("#me").find(".cost-share").val());
 		}
-		console.log(purch.split);
 
 		Meteor.call("check_purchase", purch, function(err, res) {
 			if (res.length > 0) {
@@ -128,13 +126,31 @@ Template.create.events({
 				/* Add the purchase ID to the creator's list of invited members.
 				 * If an invited venmo member isn't a member of ShareCost, then
 				 * abort, and remove the purchase. */
-				Meteor.call("send_purchase", pid, purch.members, function(error, result) {
-					if (error) {
+				Meteor.call("send_purchase", pid, purch, function(error, result) {
+					if (result.length != 0) {
 						Purchases.remove(pid);
-						alert("Purchase creation failed! Some of the invited friends haven't signed up for ShareCost.");
+						var pendingNames = [];
+						for (i = 0; i < result.length; i++) {
+							for (j = 0; j < selected.length; j++) {
+								if (result[i] == selected[j].id) {
+									pendingNames.push(selected[j].label);
+									break;
+								}
+							}
+						}
+						var confirmation = confirm("Some of the invited friends haven't signed up for ShareCost. Place a pending proposal that will register once all users have signed up?\n\nFriends not on ShareCost:\n" + pendingNames.join("\n"));
+						if (confirmation) {
+							var pending_purchase = {"purchase" : purch, "pending_members" : []};
+							var pending_id = PendingPurchases.insert(pending_purchase);
+							for (i = 0; i < result.length; i++) {
+								PendingUsers.upsert(result[i], {$push: {"purchases": pending_id}});
+								PendingPurchases.upsert(pending_id, {$push: {"pending_members" : result[i]}});
+							}
+							Router.go("/");
+						}
 					} else {
 						/* Add the purchase ID to the creator's list of created purchases */
-						Meteor.call("own_purchase", pid);
+						Meteor.call("own_purchase", pid, Meteor.userId());
 						Router.go('purchase.show', {_id: pid});
 					}
 				});
@@ -298,7 +314,7 @@ Template.registerHelper('getProfilePictureUrl', function() {
 });
 
 Template.registerHelper('getCreatorName', function() {
-	return this.member_names[this.creator];
+	return this.member_names[this.creator] + ' ($' + this.split[this.creator].toFixed(2).toString() + ')';
 });
 /* Returns true if the creator of this purchase is logged in. */
 Template.registerHelper('isCreator', function() {
@@ -307,13 +323,13 @@ Template.registerHelper('isCreator', function() {
 Template.registerHelper('getAcceptedNames', function() {
 	var purch = this;
 	return purch.accepted.map(function(elem){
-		return purch.member_names[elem];
+		return purch.member_names[elem] + ' ($' + purch.split[elem].toFixed(2).toString() + ')';
 	});
 });
 Template.registerHelper('getRejectedNames', function() {
 	var purch = this;
 	return purch.rejected.map(function(elem){
-		return purch.member_names[elem];
+		return purch.member_names[elem] + ' ($' + purch.split[elem].toFixed(2).toString() + ')';
 	});
 });
 Template.registerHelper('getPendingNames', function() {
@@ -328,6 +344,6 @@ Template.registerHelper('getPendingNames', function() {
 		}
 	});
 	return pending.map(function(elem){
-		return purch.member_names[elem];
+		return purch.member_names[elem] + ' ($' + purch.split[elem].toFixed(2).toString() + ')';
 	});
 });

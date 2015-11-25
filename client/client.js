@@ -74,7 +74,7 @@ Template.create.onRendered(function() {
 			return false;
 		} 
 	});
-	// Session.set("selectedGroups",[]);
+	Session.set("selectedGroups",[]);
 	var groupIDs = Meteor.user().groups;
 	var auto_groups = groupIDs.map(function(id) {
 		var group = Groups.findOne({_id: id});
@@ -190,6 +190,9 @@ Template.create.events({
 		});
 		Session.set("selectedFriends", new_arr);
 	},
+	'click .delete-group': function(event){
+		Session.set("selectedGroups", []);
+	},
 	'click .cost-checkbox': function(event) {
 		if ($(event.target).prop("checked")) {
 			$(".cost-share").hide();
@@ -210,10 +213,12 @@ Template.create.events({
 		if ($(event.target).prop("checked")) {
 			$('.select-friends').hide();
 			$('.select-group').show();
+			Session.set('selectedFriends', []);
 		}
 		else {
 			$('.select-group').hide();
 			$('.select-friends').show();
+			Session.set('selectedGroups', []);
 		}
 	}
 });
@@ -224,6 +229,9 @@ Template.create.helpers({
 	},
 	'isChecked': function() {
 		return $(".cost-checkbox").prop("checked");
+	},
+	'selectedGroups': function(){
+		return Session.get("selectedGroups");
 	}
 });
 
@@ -370,7 +378,7 @@ Template.CreateGroup.events({
 		/*check if group already exists*/
 		Meteor.call("check_group_exists", group.members, function(err, res){
 			if (err){
-				alert("Something went wrong with creating the group");
+				alert("Group creation failed! Some of the invited friends haven't signed up for ShareCost.");
 			}else{
 				if (res == true){
 					alert("A group consisting of the same members already exists.");

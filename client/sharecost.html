@@ -96,6 +96,14 @@
 								<div id="center"></div>
 						{{/each}}
 					</ul>
+					<ul id="selected-friends">
+						{{#each selectedGroups}}
+							<li id="{{id}}" class = "added-friend">
+								<div class="label-name">{{label}}</div>
+								<button type="button" class="delete-group btn btn-default">Remove</button> </li>
+								<div id="center"></div>
+						{{/each}}
+					</ul>
 				</div>
 				<input type="checkbox" name="selectGroup" class="group-checkbox" unchecked> Select Group
 				<div class = "form-group select-friends">

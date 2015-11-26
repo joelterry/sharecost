@@ -140,6 +140,10 @@
 .purchase-list {
 	padding: 0;
 }
+.reply-image {
+    width: 50%;
+    height: 50%;
+}
 #accept-butt {
 	margin: auto;
 }

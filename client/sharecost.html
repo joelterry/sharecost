@@ -19,26 +19,29 @@
 
 <template name='home'>
 	<div class = "row">
-		<div id = "center" class = "col-xs-10 center-block text-center home-content">
+		<div id = "center" class = "col-xs-11 center-block text-center home-content">
 			{{#if currentUser}}
 				<p><button id="create" class="btn btn-default">Create a Proposal</button></p>
 				<p><button id="createGroup" class="btn btn-default">Create a Group</button></p>
-				<div class = "col-xs-5">
-					<h3>Your purchase proposals...</h3>
-					<ul class = "purchase-list">
-						{{#each createdPurchases}}
-							{{> purchaseProposal}}
-						{{/each}}
-					</ul>
+				<div class = "col-xs-6">
+					<div class = "created">
+						<h3>Your purchase proposals...</h3>
+						<ul class = "purchase-list">
+							{{#each createdPurchases}}
+								{{> purchaseProposal}}
+							{{/each}}
+						</ul>
+					</div>
 				</div>
-				<div class = "col-xs-2"></div>
-				<div class ="col-xs-5">
-					<h3>Other purchase proposals...</h3>
-					<ul class = "purchase-list">
-						{{#each invitedPurchases}}
-							{{> purchaseProposal}}
-						{{/each}}
-					</ul>
+				<div class ="col-xs-6">
+					<div class = "shared">
+						<h3>Other purchase proposals...</h3>
+						<ul class = "purchase-list">
+							{{#each invitedPurchases}}
+								{{> purchaseProposal}}
+							{{/each}}
+						</ul>
+					</div>
 				</div>
 			{{else}}
 				<h2>Waiting to log in...</h2>
@@ -123,15 +126,18 @@
 
 <template name="purchaseProposal">
 	<div class = "row proposal">
-		<div class = "row"><h3><a href={{getPurchaseRoute}}>{{title}}</a> - ${{cost}}</h3></div>
+		{{#if isCreator}}
+			<button class = "close-button btn-default" type="button">&#10006;</button>
+		{{/if}}
+		<div class = "row wrapper"><h3><a href={{getPurchaseRoute}}>{{title}}</a> - ${{cost}}</h3></div>
 		<div class = "col-xs-9 left-align">
-			<p>Created by: {{getCreatorName}}</p>
-			<p>{{description}}</p>
+			<h5 class = "wrapperx">Created by {{getCreatorName}}</h5>
+			<p id = "description" class = "wrapper">{{description}}</p>
 			<div>
 				<p>Accepted:</p>
 				<ul>
 					{{#each getAcceptedNames}}
-						<li>{{.}}</li>
+						<li class = "wrapperx">{{.}}</li>
 					{{/each}}
 				</ul>
 			</div>
@@ -139,7 +145,7 @@
 				<p>Rejected:</p>
 				<ul>
 					{{#each getRejectedNames}}
-						<li>{{.}}</li>
+						<li class = "wrapperx">{{.}}</li>
 					{{/each}}
 				</ul>
 			</div>
@@ -147,15 +153,23 @@
 				<p>Pending:</p>
 				<ul>
 					{{#each getPendingNames}}
-						<li>{{.}}</li>
+						<li class = "wrapperx">{{.}}</li>
 					{{/each}}
 				</ul>
 			</div>
 		</div>
 		<div class = "accept-reject col-xs-3">
 			{{#unless isCreator}}
-				<div><button id="accept-butt" class = "btn btn-default">Accept</button></div>
-				<div><button id="reject-butt" class = "btn btn-default">Reject</button></div>
+				{{#if hasAccepted}}
+					<img class=reply-image src="check.png" alt="accept">
+				{{else}}
+					{{#if hasRejected}}
+						<img class=reply-image src="x.png" alt="reject">
+					{{else}}
+						<div><button id="accept-butt" class = "btn btn-default">Accept</button></div>
+						<div><button id="reject-butt" class = "btn btn-default">Reject</button></div>
+					{{/if}}
+				{{/if}}
 			{{/unless}}
 		</div>
 	</div>
@@ -164,16 +178,16 @@
 <template name="ShowPurchase">
 	<div class = "row purchase-page">
 		<div id = "center" class = "proposal-form col-xs-10 center-block">
-			<h2 class="text-center">{{title}} - ${{cost}}</h2>
+			<h2 class="text-center wrapper">{{title}} - ${{cost}}</h2>
 			<div class = "row">
 				<div class = "col-xs-9">
-					<p>Created by: {{getCreatorName}}</p>
-					<p>{{description}}</p>
+					<p class = "wrapper">Created by: {{getCreatorName}}</p>
+					<p class = "wrapper">{{description}}</p>
 					<div>
 						<p>Accepted:</p>
 						<ul>
 							{{#each getAcceptedNames}}
-								<li>{{.}}</li>
+								<li class = "wrapper">{{.}}</li>
 							{{/each}}
 						</ul>
 					</div>
@@ -181,7 +195,7 @@
 						<p>Rejected:</p>
 						<ul>
 							{{#each getRejectedNames}}
-								<li>{{.}}</li>
+								<li class = "wrapper">{{.}}</li>
 							{{/each}}
 						</ul>
 					</div>
@@ -189,7 +203,7 @@
 						<p>Pending:</p>
 						<ul>
 							{{#each getPendingNames}}
-								<li>{{.}}</li>
+								<li class = "wrapper">{{.}}</li>
 							{{/each}}
 						</ul>
 					</div>
@@ -207,14 +221,14 @@
 		<div id = "center" class = "row comment-form col-xs-10 center-block">
 			{{#each populateMessages}}
 				<div class="message" id={{id}}>
-					<span class= "posted-by">{{creator}}</span><span>  {{message}}</span><div class = "posted-at">at {{created_at}}</div>
+					<span class= "posted-by">{{creator}}</span><span class = "wrapper">  {{message}}</span><div class = "posted-at">at {{created_at}}</div>
 					{{#if replying}}
 					{{else}}
 						<button class="reply-button btn btn-default">Reply</button>
 					{{/if}}
 					<ul class="comments">
 						{{#each comments}}
-							<li><span class= "posted-by">{{creator}}</span><span>  {{message}}</span><div class = "posted-at">at {{created_at}}</div></li>
+							<li><span class= "posted-by">{{creator}}</span><span class = "wrapper">  {{message}}</span><div class = "posted-at">at {{created_at}}</div></li>
 						{{/each}}
 					</ul>
 					{{#if replying}}

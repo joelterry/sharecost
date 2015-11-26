@@ -89,6 +89,23 @@ if (Meteor.isServer){
 			if (Meteor.user().groups == undefined){
 				Users.update(Meteor.userId(), {$set: {groups: []}});
 			}
+			var venmo_id = Meteor.user().services.venmo.id;
+			var userPending = PendingUsers.findOne(venmo_id);
+			if (userPending != null) {
+				for (i = 0; i < userPending.purchases.length; i++) {
+					PendingPurchases.upsert(userPending.purchases[i], {$pull: {"pending_members" : venmo_id}});
+					var current_purchase = PendingPurchases.findOne(userPending.purchases[i]);
+					if (current_purchase.pending_members.length == 0) {
+						var pid = Purchases.insert(current_purchase.purchase);
+						PendingPurchases.remove(userPending.purchases[i]);
+						Meteor.call("send_purchase", pid, current_purchase.purchase, function(error, result) {
+							var creator = Users.findOne({'services.venmo.id': current_purchase.purchase.creator});
+							Meteor.call("own_purchase", pid, creator);
+						});
+					}
+				}
+				PendingUsers.remove(venmo_id);
+			}
 		},
 		/* Makes a Venmo payment of 'amount' from srcUser (app ID) to dstVenmo (venmo ID). */
 		'user_pay_user': function(srcUser, dstVenmo, amount) {
@@ -116,26 +133,34 @@ if (Meteor.isServer){
 		 * Throws an error if any of the venmo members aren't signed up for the app. */
 		'venmo_ids_to_ids': function(vids) {
 			var result = [];
+			var pending = [];
 			vids.forEach(function(vid) {
 				var user = Users.findOne({'services.venmo.id': vid});
 				if (!user) {
-					throw new Meteor.Error("Error: one of these Venmo members hasn't signed up for ShareCost.");
+					pending.push(vid);
 				}
-				result.push(user._id);
+				else {
+					result.push(user._id);
+				}
 			});
-			return result;
+			return [result, pending];
 		},
 		/* Adds a purchase id to each app user (according to their venmo id).
 		 * Uses venmo_ids_to_ids as a helper.
 		 * Throws an error (via helper) if any of the venmo members aren't signed up for the app.  */
 		'send_purchase': function(pid, vids) {
-			var ids = Meteor.call("venmo_ids_to_ids", vids);
-			Users.update({_id: {$in: ids}}, {$push: {'purchases.invited': pid}});
+			// changed vids from purch.members to purch (alex)
+			var v_ids = Meteor.call("venmo_ids_to_ids", vids.members);
+			var ids = v_ids[0];
+			if (v_ids[1].length == 0) {
+				Users.update({_id: {$in: ids}}, {$push: {'purchases.invited': pid}});
+			}
+			return v_ids[1];
 		},
 		/* Adds a purchase id to the current user's purchase.created.
 		 * I made this because Meteor won't let me do it client-side. */
-		'own_purchase': function(pid) {
-			Users.update(Meteor.userId(), {$push: {'purchases.created': pid}});
+		'own_purchase': function(pid, owner) {
+			Users.update(owner, {$push: {'purchases.created': pid}});
 		},
 		/*add a group to a user's groups field. pass in group id as argument and array of venmo_ids in group*/
 		'add_group': function(gid, vids){

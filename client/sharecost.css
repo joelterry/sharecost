@@ -72,10 +72,21 @@
 	padding: 10px;
 	margin-bottom: 10px;
 	position: relative;
+    padding-right: 75px;
 }
 .purchase-page .proposal-form {
 	margin-top: 32px;
 }
+
+.wrapper {
+    word-wrap: break-word;
+}
+
+.wrapperx {
+	/*overflow-x: hidden;*/
+	white-space: nowrap;
+}
+
 .cost-input {
 	width: 30%;
 }
@@ -112,6 +123,19 @@
 	display: none;
 }
 
+.close-button {
+	float: right;
+	margin-right: -30px;
+	margin-top: -30px;
+	background-color: #EDEAFA;
+	border: 0px;
+}
+.created {
+	margin-right: 16px;
+}
+.shared {
+	margin-left: 16px;
+}
 .proposal {
 	margin-top: 30px;
 	padding: 30px;
@@ -122,8 +146,15 @@
 	margin: 0;
 	padding-bottom: 0;
 }
+#description {
+	padding: 12px;
+}
 .purchase-list {
 	padding: 0;
+}
+.reply-image {
+    width: 50%;
+    height: 50%;
 }
 #accept-butt {
 	margin: auto;

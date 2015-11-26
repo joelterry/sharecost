@@ -31,7 +31,7 @@ venmo_responses: { }  NOTE: should we have this?
 messages: [message, ...]
 */
 
-friendsDatabase = function() {
+/*friendsDatabase = function() {
     return new Mongo.Collection("friends");
 }
 
@@ -45,12 +45,26 @@ meteorUsers = function() {
 
 groupsDatabase = function(){
     return new Mongo.Collection("groups");
+
+pendingDatabase = function() {
+	return new Mongo.Collection("pending_users");
+}
+
+pendingPurchasesDatabase = function() {
+	return new Mongo.Collection("pending_purchases");
 }
 
 Purchases = purchasesDatabase();
 Friends = friendsDatabase();
 Groups = groupsDatabase();
 Users = meteorUsers();
+PendingUsers = pendingDatabase();
+PendingPurchases = pendingPurchasesDatabase();*/
+Purchases = new Mongo.Collection("purchases");
+Friends = new Mongo.Collection("friends");
+Users = Meteor.users;
+PendingUsers = new Mongo.Collection("pending_users");
+PendingPurchases = new Mongo.Collection("pending_purchases");
 
 if (Meteor.isServer) {
   /* Server publishes all purchases with current user as a member */
@@ -81,6 +95,13 @@ if (Meteor.isServer) {
     }else{
       this.ready();
     }
+
+  Meteor.publish("pendingUsers", function () {
+    this.ready();
+  });
+
+  Meteor.publish("pendingPurchases", function () {
+    this.ready();
   });
 
   /* Helper for validating strings. min and max are inclusive.
@@ -129,14 +150,17 @@ if (Meteor.isServer) {
         if (isNaN(purchase.split[member])) {
           badSplitCost = true;
         }
+        else if (purchase.split[member] < 0) {
+          badSplitCost = true;
+        }
         else {
           sum += purchase.split[member];
         }
       }
       if (badSplitCost) {
-        errors.push("Cost should be a number.");
+        errors.push("Cost should be a non-negative number.");
       }
-      if (sum < purchase.cost - 1 || sum > purchase.cost + 1) {
+      else if (sum < purchase.cost - 0.15 || sum > purchase.cost + 0.15) {
         errors.push("Specified costs do not add up.");
       }
 
@@ -152,4 +176,6 @@ if (Meteor.isClient) {
   Meteor.subscribe("userData");
   Meteor.subscribe("friends");
   Meteor.subscribe("groups");
+  Meteor.subscribe("pendingUsers");
+  Meteor.subscribe("pendingPurchases");
 }

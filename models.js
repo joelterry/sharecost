@@ -9,10 +9,10 @@ venmo_friends: [{user1}, {user2}]
 
 ===Groups Schema===
 _id: hash
-Name: ""
-Description: ""
+title: ""
+description: ""
 members: [venmo_id,...]
-member_names: [venmo_id: name,...] NOTE: for display purposes
+member_names: {venmo_id: name,...} NOTE: for display purposes
 
 
 ===Purchase Schema===
@@ -43,15 +43,15 @@ meteorUsers = function() {
     return Meteor.users
 }
 
-groupsDatabase = function(){
-    return new Mongo.Collection("groups");
-
 pendingDatabase = function() {
 	return new Mongo.Collection("pending_users");
 }
 
 pendingPurchasesDatabase = function() {
 	return new Mongo.Collection("pending_purchases");
+
+groupsDatabase = function(){
+    return new Mongo.Collection("groups");
 }
 
 Purchases = purchasesDatabase();
@@ -63,6 +63,7 @@ PendingPurchases = pendingPurchasesDatabase();*/
 Purchases = new Mongo.Collection("purchases");
 Friends = new Mongo.Collection("friends");
 Users = Meteor.users;
+Groups = new Mongo.Collection("groups");
 PendingUsers = new Mongo.Collection("pending_users");
 PendingPurchases = new Mongo.Collection("pending_purchases");
 
@@ -89,20 +90,20 @@ if (Meteor.isServer) {
     
   });
 
-  Meteor.publish('groups', function(){
-    if (this.userId){
-      return Groups.find();
-    }else{
-      this.ready();
-    }
-  });
-
   Meteor.publish("pendingUsers", function () {
     this.ready();
   });
 
   Meteor.publish("pendingPurchases", function () {
     this.ready();
+  });
+
+  Meteor.publish("groups", function(){
+    if (this.userId){
+      return Groups.find();
+    }else{
+      this.ready();
+    }
   });
 
   /* Helper for validating strings. min and max are inclusive.
@@ -175,8 +176,8 @@ if (Meteor.isClient) {
   /* Server publishes all purchases with current user as a member */
   Meteor.subscribe("purchases");
   Meteor.subscribe("userData");
-  Meteor.subscribe("friends")
-  Meteor.subscribe("groups");
+  Meteor.subscribe("friends");
   Meteor.subscribe("pendingUsers");
   Meteor.subscribe("pendingPurchases");
+  Meteor.subscribe("groups");
 }

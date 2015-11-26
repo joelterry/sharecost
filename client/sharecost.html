@@ -90,33 +90,35 @@
 						{{#each selectedFriends}}
 							<li id="{{id}}" class = "added-friend">
 								<div class="label-name">{{label}}</div>
-								{{#if isChecked}}
+								{{#if costChecked}}
 									<input type="text" class="hide-init cost-share form-control">
 								{{else}}
 									<input type="text" class="cost-share form-control">
 								{{/if}}
-								<button type="button" class="delete-friend btn btn-default">Remove</button> </li>
-								<div id="center"></div>
-						{{/each}}
-					</ul>
-					<ul id="selected-friends">
-						{{#each selectedGroups}}
-							<li id="{{id}}" class = "added-friend">
-								<div class="label-name">{{label}}</div>
-								<button type="button" class="delete-group btn btn-default">Remove</button> </li>
+								{{#unless groupChecked}}
+									<button type="button" class="delete-friend btn btn-default">Remove</button>
+								{{/unless}}
+							</li>
 								<div id="center"></div>
 						{{/each}}
 					</ul>
 				</div>
 				<input type="checkbox" name="selectGroup" class="group-checkbox" unchecked> Select Group
+				{{#if groupChecked}}
+				<div class = "form-group select-group">
+					<label class = "control-label">Select Group:</label>
+					<select class="selected-group">
+						{{#each getGroups}}
+							<option id={{_id}}>{{title}}</option>
+						{{/each}}
+					</select>
+				</div>
+				{{else}}
 				<div class = "form-group select-friends">
 					<label class = "control-label" for="friends-autocomplete">Add Friends:</label>
 					<input type="text" class = "form-control" name="friends" id="friends-autocomplete">
 				</div>
-				<div class = "form-group select-group">
-					<label class = "control-label" for="groups-autocomplete">Add Group:</label>
-					<input type="text" class = "form-control" name="groups" id="groups-autocomplete">
-				</div>
+				{{/if}}
 				<a href="/" class="cancel btn btn-default">Cancel</a>
 				<input class = "btn btn-default" type="submit" value="Submit">
 			</form>

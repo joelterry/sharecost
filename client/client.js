@@ -84,6 +84,7 @@ Template.create.events({
 		event.preventDefault();
 
 		var purch = {};
+		purch.creator = Meteor.user().services.venmo.id;
 		var member_names = {};
 		if (Session.get("groupChecked")){
 			var id = $(".selected-group option:selected").attr("id");
@@ -183,6 +184,16 @@ Template.create.events({
 	},
 	'click .group-checkbox': function(event) {
 		Session.set("groupChecked", event.target.checked);
+	},
+	'change .selected-group': function(event) {
+		var currGroup = Groups.findOne(event.target.options[event.target.selectedIndex].id);
+		var arr = [];
+		for (i = 0; i < currGroup.members.length; i++) {
+			if (currGroup.members[i] != Users.findOne(Meteor.userId()).services.venmo.id) {
+				arr.push({'id': currGroup.members[i], 'label': currGroup.member_names[currGroup.members[i]]});
+			}
+		}
+		Session.set("selectedFriends", arr);
 	}
 });
 
@@ -329,7 +340,7 @@ Template.CreateGroup.events({
         group.title = event.target.groupName.value;
         group.description = event.target.description.value;
         group.members = groupFriends.map(function(elem){return elem.id}); //get all venmo_ids
- 		group.members.push(creatorVenmoId);
+ 		//group.members.push(creatorVenmoId);
 
         var member_names = {};
         groupFriends.forEach(function(elem){
@@ -350,35 +361,6 @@ Template.CreateGroup.events({
 						alert("You need to add at least 1 person to the group.");
 					}else if (group.title == "" || group.title.length > 64){
 						alert("Group title must be between 1 and 64 characters.");
-					}else if (group.description ==""){
-						alert("You need to include a description for the group.");
-					}else{
-						var response = Groups.insert(group);
-			        	Meteor.call("add_group", response, group.members, function(err, res){
-				        	if (err) {
-								Groups.remove(response);
-								alert("Group creation failed! Some of the invited friends haven't signed up for ShareCost.");
-							} else {
-								/* Add the purchase ID to the creator's list of created purchases */
-								Router.go('/');
-							}
-				        });
-					}
-				}
-			}
-		});
-		
-		Meteor.call("check_group_exists", group.members, function(err, res){
-			if (err){
-				alert("Group creation failed! Some of the invited friends haven't signed up for ShareCost.");
-			}else{
-				if (res == true){
-					alert("A group consisting of the same members already exists.");
-				}else if (res == false){
-					if (group.members.length == 1){
-						alert("You need to add at least 1 person to the group.");
-					}else if (group.title == ""){
-						alert("You need to include a name for the group.");
 					}else if (group.description ==""){
 						alert("You need to include a description for the group.");
 					}else{

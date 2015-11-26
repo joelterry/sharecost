@@ -92,15 +92,10 @@
 								{{else}}
 									<input type="text" class="cost-share form-control">
 								{{/if}}
-								<button type="button" class="delete-friend btn btn-default">Remove</button> </li>
-								<div id="center"></div>
-						{{/each}}
-					</ul>
-					<ul id="selected-friends">
-						{{#each selectedGroups}}
-							<li id="{{id}}" class = "added-friend">
-								<div class="label-name">{{label}}</div>
-								<button type="button" class="delete-group btn btn-default">Remove</button> </li>
+                                {{#unless groupChecked}}
+								    <button type="button" class="delete-friend btn btn-default">Remove</button>
+                                {{/unless}}
+                            </li>
 								<div id="center"></div>
 						{{/each}}
 					</ul>

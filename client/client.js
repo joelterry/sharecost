@@ -389,7 +389,7 @@ Template.CreateGroup.events({
 				if (res == true){
 					alert("A group consisting of the same members already exists.");
 				}else if (res == false){
-					if (group.members.length == 1){
+					if (group.members.length < 1){
 						alert("You need to add at least 1 person to the group.");
 					}else if (group.title == "" || group.title.length > 64){
 						alert("Group title must be between 1 and 64 characters.");
@@ -397,7 +397,9 @@ Template.CreateGroup.events({
 						alert("You need to include a description for the group.");
 					}else{
 						var response = Groups.insert(group);
-			        	Meteor.call("add_group", response, group.members, function(err, res){
+						var allMembers = group.members.slice();
+						allMembers.push(Meteor.user().services.venmo.id);
+			        	Meteor.call("add_group", response, allMembers, function(err, res){
 				        	if (err) {
 								Groups.remove(response);
 								alert("Group creation failed! Some of the invited friends haven't signed up for ShareCost.");

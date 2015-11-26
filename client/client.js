@@ -384,7 +384,7 @@ Template.CreateGroup.events({
 		/*check if group already exists*/
 		Meteor.call("check_group_exists", group.members, function(err, res){
 			if (err){
-				console.log(err);
+				alert("Group creation failed! Some of the invited friends haven't signed up for ShareCost.");
 			}else{
 				if (res == true){
 					alert("A group consisting of the same members already exists.");

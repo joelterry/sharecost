@@ -54,8 +54,10 @@ Template.home.helpers({
 	}
 });
 
-Template.create.onRendered(function() {
-	Session.set("selectedFriends", []);
+
+
+Template.friendsAutocomplete.onRendered(function() {
+	/* Initializes autocomplete functionaity */
 	var friends = Friends.findOne(Meteor.userId()).venmo_friends;
 	var auto_friends = friends.map(function(elem) {
 		return {
@@ -80,8 +82,12 @@ Template.create.onRendered(function() {
 			return false;
 		} 
 	});
+});
 
+
+Template.create.onRendered(function() {
 	Session.set("groupChecked", $("group-checkbox").prop("checked"));
+	Session.set("selectedFriends", []);
 });
 
 Template.create.events({
@@ -206,6 +212,10 @@ Template.create.events({
 	},
 	'click .group-checkbox': function(event) {
 		Session.set("groupChecked", event.target.checked);
+		Session.set("selectedFriends", []);
+		if (!event.target.checked) {
+			autocomplete_setup();
+		}
 	},
 	'change .selected-group': function(event) {
 		var currGroup = Groups.findOne(event.target.options[event.target.selectedIndex].id);

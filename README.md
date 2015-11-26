@@ -4,7 +4,7 @@ Sharecost allows you to split the cost of any purchase! Login with your Venmo ac
 
 ###Instructions for Aaron:
 
-Log in with Venmo and create a purchase that you would like to split evenly with a group of people. Currently, as of iter2, they need to have also logged in to sharecost before for it to work AND they also need to be your friends on Venmo. For example, if you (Aaron) login in to sharecost.meteor.com you can create a new purchase and invite Trent or Nathan to that purchase since they (1) have accounts on sharecost and (2) are your friends on Venmo.
+Log in with Venmo and create a purchase that you would like to split evenly with a group of people. Currently, as of iter3, you can invite any of your Venmo friends but they have to login to Sharecost to complete the purchase.
 
 ### Testing:
 

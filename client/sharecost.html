@@ -111,6 +111,7 @@
 				<div class = "form-group select-group">
 					<label class = "control-label">Select Group:</label>
 					<select class="selected-group">
+						<option selected disabled hidden value=""></option>
 						{{#each getGroups}}
 							<option id={{_id}}>{{title}}</option>
 						{{/each}}
@@ -119,7 +120,7 @@
 				{{else}}
 				<div class = "form-group select-friends">
 					<label class = "control-label" for="friends-autocomplete">Add Friends:</label>
-					<input type="text" class = "form-control" name="friends" id="friends-autocomplete">
+					{{> friendsAutocomplete}}
 				</div>
 				{{/if}}
 				<a href="/" class="cancel btn btn-default">Cancel</a>
@@ -127,6 +128,10 @@
 			</form>
 		</div>
 	</div>
+</template>
+
+<template name="friendsAutocomplete">
+	<input type="text" class = "form-control" name="friends" id="friends-autocomplete">
 </template>
 
 <template name="purchaseProposal">

@@ -166,7 +166,7 @@ if (Meteor.isServer){
 		'add_group': function(gid, vids){
 			var all_ids = Meteor.call("venmo_ids_to_ids", vids);
 			if (all_ids[1].length != 0) {
-				Meteor.Error("Some people aren't in ShareCost");
+				throw new Meteor.Error("Some people aren't in ShareCost");
 			}
 			var ids = all_ids[0];
 			ids.forEach(function(sid){

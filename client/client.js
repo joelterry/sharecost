@@ -74,33 +74,8 @@ Template.create.onRendered(function() {
 			return false;
 		} 
 	});
-	Session.set("selectedGroups",[]);
-	var groupIDs = Meteor.user().groups;
-	var auto_groups = groupIDs.map(function(id) {
-		var group = Groups.findOne({_id: id});
-		return {
-			/* group id*/
-			'id': id,
-			'label': group.title
-		}
-	});
-	Session.set("groupChecked", false);
-	/* jQuery UI autocomplete --> groups*/
-	$("#groups-autocomplete").autocomplete({
-	 	source: auto_groups,
-	 	focus: function( event, ui ) {
-	 		$("#groups-autocomplete").val( ui.item.label);
-	 		return false;
-	 	},
-	 	select: function( event, ui ) {
-	 		var arr = Session.get("selectedGroups");
-	 		arr.push(ui.item);
-	 		Session.set("selectedGroups", arr);
-	 		$("#groups-autocomplete").val('');
-	 		return false;
-	 	} 
-	});
 
+	Session.set("groupChecked", $("group-checkbox").prop("checked"));
 });
 
 Template.create.events({
@@ -109,36 +84,21 @@ Template.create.events({
 		event.preventDefault();
 
 		var purch = {};
-		purch.creator = Meteor.user().services.venmo.id;
-		
-		/*set up members and member_names for group*/
-		if (Session.get("groupChecked") == true){
-			var abridgedGroup = Session.get("selectedGroups")[0];
-			var id = abridgedGroup.id;
+		var member_names = {};
+		if (Session.get("groupChecked")){
+			var id = $(".selected-group option:selected").attr("id");
 			var group = Groups.findOne({_id: id});
-			var arrInclusive = group.members;
-			purch.member_names = group.member_names;
-
-			/*delete current users venmo_id from group for puchase.members*/
-			var arrExclusive = [];
-			arrInclusive.forEach(function(vid){
-				if (vid != Meteor.user().services.venmo.id){
-					arrExclusive.push(vid);
-				}
-			});
-			var selected = arrExclusive;
-			purch.members = selected;
-		/*set up members and member_names for friends*/
+			purch.members = group.members;
+			/* Adding member names */
+			member_names = group.member_names;
 		}else{
 			var selected = Session.get("selectedFriends");
-			member_names={};
+			purch.members = selected.map(function(elem){return elem.id});
+			/* Adding member names */
 			selected.forEach(function(elem){
 				member_names[elem.id] = elem.label;
 			});
 			member_names[purch.creator] = Meteor.user().services.venmo.display_name;
-			purch.member_names = member_names;
-
-			purch.members = selected.map(function(elem){return elem.id});
 		}
 		purch.title = event.target.title.value;
 		purch.description = event.target.description.value;
@@ -149,7 +109,8 @@ Template.create.events({
 		purch.split = {};
 		purch.created_at = new Date();
 		purch.messages = [];
-
+		purch.member_names = member_names;
+		
 		var evenShare = Number((Math.floor((purch.cost * 100) / (purch.members.length + 1)) / 100).toFixed(2));
 		$(event.target).find("li").each(function() {
 			if (!event.target.unevenSplit.checked) {
@@ -204,9 +165,6 @@ Template.create.events({
 		});
 		Session.set("selectedFriends", new_arr);
 	},
-	'click .delete-group': function(event){
-		Session.set("selectedGroups", []);
-	},
 	'click .cost-checkbox': function(event) {
 		if ($(event.target).prop("checked")) {
 			$(".cost-share").hide();
@@ -224,19 +182,7 @@ Template.create.events({
 		}
 	},
 	'click .group-checkbox': function(event) {
-		Session.set("groupChecked")
-		if ($(event.target).prop("checked")) {
-			$('.select-friends').hide();
-			$('.select-group').show();
-			Session.set('selectedFriends', []);
-			Session.set("groupChecked", true);
-		}
-		else {
-			$('.select-group').hide();
-			$('.select-friends').show();
-			Session.set('selectedGroups', []);
-			Session.set("groupChecked", false);
-		}
+		Session.set("groupChecked", event.target.checked);
 	}
 });
 
@@ -244,11 +190,11 @@ Template.create.helpers({
 	'selectedFriends': function() {
 		return Session.get("selectedFriends");
 	},
-	'isChecked': function() {
+	'costChecked': function() {
 		return $(".cost-checkbox").prop("checked");
 	},
-	'selectedGroups': function(){
-		return Session.get("selectedGroups");
+	'groupChecked': function() {
+		return Session.get("groupChecked");
 	}
 });
 
@@ -395,7 +341,7 @@ Template.CreateGroup.events({
 		/*check if group already exists*/
 		Meteor.call("check_group_exists", group.members, function(err, res){
 			if (err){
-				alert("Group creation failed! Some of the invited friends haven't signed up for ShareCost.");
+				console.log(err);
 			}else{
 				if (res == true){
 					alert("A group consisting of the same members already exists.");
@@ -539,4 +485,12 @@ Template.registerHelper('getPendingNames', function() {
 	return pending.map(function(elem){
 		return purch.member_names[elem];
 	});
+});
+/* Returns a list of the current user's groups (objects). */
+Template.registerHelper('getGroups', function() {
+	var user = Meteor.user();
+	if (user) {
+		return Groups.find({_id: {$in: user.groups}}).fetch();
+	}
+	return [];
 });

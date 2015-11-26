@@ -9,10 +9,10 @@ venmo_friends: [{user1}, {user2}]
 
 ===Groups Schema===
 _id: hash
-Name: ""
-Description: ""
+title: ""
+description: ""
 members: [venmo_id,...]
-member_names: [venmo_id: name,...] NOTE: for display purposes
+member_names: {venmo_id: name,...} NOTE: for display purposes
 
 
 ===Purchase Schema===

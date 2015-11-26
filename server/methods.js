@@ -164,7 +164,11 @@ if (Meteor.isServer){
 		},
 		/*add a group to a user's groups field. pass in group id as argument and array of venmo_ids in group*/
 		'add_group': function(gid, vids){
-			var ids = Meteor.call("venmo_ids_to_ids", vids)[0];
+			var all_ids = Meteor.call("venmo_ids_to_ids", vids);
+			if (all_ids[1].length != 0) {
+				Meteor.Error("Some people aren't in ShareCost");
+			}
+			var ids = all_ids[0];
 			ids.forEach(function(sid){
 				Users.update({_id: sid}, {$push:{'groups': gid}});
 			});

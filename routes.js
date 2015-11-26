@@ -18,6 +18,14 @@ Router.route('/create', function () {
     }
 });
 
+Router.route('/groups', function () {
+    if (Meteor.user()) {
+        this.render('Groups');
+    } else {
+        this.redirect('/login');
+    }
+});
+
 Router.route('/', function () {
   if (Meteor.user()) {
   	this.render('home');

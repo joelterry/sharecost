@@ -19,6 +19,12 @@ Template.login.events({
 Template.home.events({
 	'click #create': function(event) {
 		Router.go('/create');
+	},
+	'click .close-button': function(event) {
+		var remove = confirm("Do you want to delete this proposal? This action cannot be undone");
+		if (remove) {
+			Purchases.remove(this._id);
+		}
 	}
 });
 
@@ -292,6 +298,7 @@ var events = {
 		});
 	},
 	'click #reject-butt': function(event) {
+        console.log(Template.instance());
 		var purch_id = Template.instance().data._id;
 		Meteor.call("reject_purchase", purch_id, function(err, res) {
 			if (err) {
@@ -319,6 +326,22 @@ Template.registerHelper('getCreatorName', function() {
 /* Returns true if the creator of this purchase is logged in. */
 Template.registerHelper('isCreator', function() {
 	return this.creator == Meteor.user().services.venmo.id;
+});
+Template.registerHelper('hasAccepted', function() {
+	for (i = 0; i < this.accepted.length; i++) {
+		if (Meteor.user().services.venmo.id == this.accepted[i]) {
+			return true;
+		}
+	}
+	return false;
+});
+Template.registerHelper('hasRejected', function() {
+	for (i = 0; i < this.rejected.length; i++) {
+		if (Meteor.user().services.venmo.id == this.rejected[i]) {
+			return true;
+		}
+	}
+	return false;
 });
 Template.registerHelper('getAcceptedNames', function() {
 	var purch = this;

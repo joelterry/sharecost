@@ -109,6 +109,9 @@
 
 <template name="purchaseProposal">
 	<div class = "row proposal">
+		{{#if isCreator}}
+			<button class = "close-button btn-default" type="button">&#10006;</button>
+		{{/if}}
 		<div class = "row wrapper"><h3><a href={{getPurchaseRoute}}>{{title}}</a> - ${{cost}}</h3></div>
 		<div class = "col-xs-9 left-align">
 			<p class = "wrapperx">Created by: {{getCreatorName}}</p>
@@ -140,8 +143,16 @@
 		</div>
 		<div class = "accept-reject col-xs-3">
 			{{#unless isCreator}}
-				<div><button id="accept-butt" class = "btn btn-default">Accept</button></div>
-				<div><button id="reject-butt" class = "btn btn-default">Reject</button></div>
+				{{#if hasAccepted}}
+					<img class=reply-image src="check.png" alt="accept">
+				{{else}}
+					{{#if hasRejected}}
+						<img class=reply-image src="x.png" alt="reject">
+					{{else}}
+						<div><button id="accept-butt" class = "btn btn-default">Accept</button></div>
+						<div><button id="reject-butt" class = "btn btn-default">Reject</button></div>
+					{{/if}}
+				{{/if}}
 			{{/unless}}
 		</div>
 	</div>

@@ -119,6 +119,14 @@
 	margin-bottom: 30px;
 }
 
+.close-button {
+	float: right;
+	margin-right: -30px;
+	margin-top: -30px;
+	background-color: #EDEAFA;
+	border: 0px;
+}
+
 .proposal {
 	margin-top: 30px;
 	padding: 30px;
@@ -131,6 +139,10 @@
 }
 .purchase-list {
 	padding: 0;
+}
+.reply-image {
+    width: 50%;
+    height: 50%;
 }
 #accept-butt {
 	margin: auto;

@@ -126,7 +126,12 @@
 	background-color: #EDEAFA;
 	border: 0px;
 }
-
+.created {
+	margin-right: 16px;
+}
+.shared {
+	margin-left: 16px;
+}
 .proposal {
 	margin-top: 30px;
 	padding: 30px;
@@ -136,6 +141,9 @@
 .proposal p {
 	margin: 0;
 	padding-bottom: 0;
+}
+#description {
+	padding: 12px;
 }
 .purchase-list {
 	padding: 0;

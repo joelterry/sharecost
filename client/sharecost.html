@@ -19,25 +19,28 @@
 
 <template name='home'>
 	<div class = "row">
-		<div id = "center" class = "col-xs-10 center-block text-center home-content">
+		<div id = "center" class = "col-xs-11 center-block text-center home-content">
 			{{#if currentUser}}
 				<p><button id="create" class="btn btn-default">Create a Proposal</button></p>
-				<div class = "col-xs-5">
-					<h3>Your purchase proposals...</h3>
-					<ul class = "purchase-list">
-						{{#each createdPurchases}}
-							{{> purchaseProposal}}
-						{{/each}}
-					</ul>
+				<div class = "col-xs-6">
+					<div class = "created">
+						<h3>Your purchase proposals...</h3>
+						<ul class = "purchase-list">
+							{{#each createdPurchases}}
+								{{> purchaseProposal}}
+							{{/each}}
+						</ul>
+					</div>
 				</div>
-				<div class = "col-xs-2"></div>
-				<div class ="col-xs-5">
-					<h3>Other purchase proposals...</h3>
-					<ul class = "purchase-list">
-						{{#each invitedPurchases}}
-							{{> purchaseProposal}}
-						{{/each}}
-					</ul>
+				<div class ="col-xs-">
+					<div class = "shared">
+						<h3>Other purchase proposals...</h3>
+						<ul class = "purchase-list">
+							{{#each invitedPurchases}}
+								{{> purchaseProposal}}
+							{{/each}}
+						</ul>
+					</div>
 				</div>
 			{{else}}
 				<h2>Waiting to log in...</h2>
@@ -114,8 +117,8 @@
 		{{/if}}
 		<div class = "row wrapper"><h3><a href={{getPurchaseRoute}}>{{title}}</a> - ${{cost}}</h3></div>
 		<div class = "col-xs-9 left-align">
-			<p class = "wrapperx">Created by: {{getCreatorName}}</p>
-			<p class = "wrapper">{{description}}</p>
+			<h5 class = "wrapperx">Created by {{getCreatorName}}</h5>
+			<p id = "description" class = "wrapper">{{description}}</p>
 			<div>
 				<p>Accepted:</p>
 				<ul>

@@ -108,6 +108,7 @@
 				<div class = "form-group select-group">
 					<label class = "control-label">Select Group:</label>
 					<select class="selected-group">
+						<option selected disabled hidden value=""></option>
 						{{#each getGroups}}
 							<option id={{_id}}>{{title}}</option>
 						{{/each}}

@@ -109,22 +109,45 @@ Template.create.events({
 		event.preventDefault();
 
 		var purch = {};
-		console.log(Session.get("groupChecked"));
-		if (Session.get("groupChecked")){
+		purch.creator = Meteor.user().services.venmo.id;
+		if ($(".group-checkbox").prop("checked")){
 			var abridgedGroup = Session.get("selectedGroups")[0];
 			var id = abridgedGroup.id;
 			var group = Groups.findOne({_id: id});
-			var selected = group.members;
+			var arrInclusive = group.members;
+			// arrInclusive.forEach(function(vid){
+			// 	var user = Users.findOne({'services.venmo.id': vid});
+			// 	console.log(user);
+			// 	member_names[vid] = user.services.venmo.display_name;
+			// });
+			console.log(group.member_names)
+			purch.member_names = group.member_names;
+			console.log(purch.member_names);
+
+			/*delete current users venmo_id from group for puchase.members*/
+			var arrExclusive = [];
+			arrInclusive.forEach(function(vid){
+				if (vid != Meteor.user().services.venmo.id){
+					arrExclusive.push(vid);
+				}
+			});
+			var selected = arrExclusive;
 			purch.members = selected;
 		}else{
 			var selected = Session.get("selectedFriends");
-			console.log(selected);
+			member_names={};
+			selected.forEach(function(elem){
+				member_names[elem.id] = elem.label;
+			});
+			member_names[purch.creator] = Meteor.user().services.venmo.display_name;
+			purch.member_names = member_names;
+			console.log(purch.member_names);
+
 			purch.members = selected.map(function(elem){return elem.id});
 		}
 		purch.title = event.target.title.value;
 		purch.description = event.target.description.value;
 		purch.cost = Number(event.target.cost.value);
-		purch.creator = Meteor.user().services.venmo.id;
 		purch.accepted = [];
 		purch.rejected = [];
 		purch.paid = [];
@@ -132,13 +155,6 @@ Template.create.events({
 		purch.created_at = new Date();
 		purch.messages = [];
 
-		//check to see if this needs to change if it is involving a group
-		var member_names = {};
-		selected.forEach(function(elem){
-			member_names[elem.id] = elem.label;
-		});
-		member_names[purch.creator] = Meteor.user().services.venmo.display_name;
-		purch.member_names = member_names;
 		var evenShare = Number((Math.floor((purch.cost * 100) / (purch.members.length + 1)) / 100).toFixed(2));
 		$(event.target).find("li").each(function() {
 			if (!event.target.unevenSplit.checked) {
@@ -382,6 +398,35 @@ Template.CreateGroup.events({
 		group.member_names = member_names;
 
 		/*check if group already exists*/
+		Meteor.call("check_group_exists", group.members, function(err, res){
+			if (err){
+				alert("Group creation failed! Some of the invited friends haven't signed up for ShareCost.");
+			}else{
+				if (res == true){
+					alert("A group consisting of the same members already exists.");
+				}else if (res == false){
+					if (group.members.length == 1){
+						alert("You need to add at least 1 person to the group.");
+					}else if (group.title == ""){
+						alert("You need to include a name for the group.");
+					}else if (group.description ==""){
+						alert("You need to include a description for the group.");
+					}else{
+						var response = Groups.insert(group);
+			        	Meteor.call("add_group", response, group.members, function(err, res){
+				        	if (err) {
+								Groups.remove(response);
+								alert("Group creation failed! Some of the invited friends haven't signed up for ShareCost.");
+							} else {
+								/* Add the purchase ID to the creator's list of created purchases */
+								Router.go('/');
+							}
+				        });
+					}
+				}
+			}
+		});
+		
 		Meteor.call("check_group_exists", group.members, function(err, res){
 			if (err){
 				alert("Group creation failed! Some of the invited friends haven't signed up for ShareCost.");

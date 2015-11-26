@@ -213,9 +213,6 @@ Template.create.events({
 	'click .group-checkbox': function(event) {
 		Session.set("groupChecked", event.target.checked);
 		Session.set("selectedFriends", []);
-		if (!event.target.checked) {
-			autocomplete_setup();
-		}
 	},
 	'change .selected-group': function(event) {
 		var currGroup = Groups.findOne(event.target.options[event.target.selectedIndex].id);

@@ -21,8 +21,11 @@
 	<div class = "row">
 		<div id = "center" class = "col-xs-11 center-block text-center home-content">
 			{{#if currentUser}}
-				<p><button id="create" class="btn btn-default">Create a Proposal</button></p>
-				<p><button id="createGroup" class="btn btn-default">Create a Group</button></p>
+				<div class = "row">
+					<p class = "pcreate"><button id="create" class="btn btn-default">Create a Proposal</button></p>
+					<p class = "pgcreate"><button id="createGroup" class="btn btn-default">Create a Group</button></p>
+					<p class = "pgroup"><button id="mygroups" class="btn btn-default">View My Groups</button></p>
+				</div>
 				<div class = "col-xs-6">
 					<div class = "created">
 						<h3>Your purchase proposals...</h3>
@@ -295,10 +298,8 @@
 </template>
 
 <template name = "Groups">
-	<div class = "row text-center">
+	<div class = "row text-center home-content">
 		<h2>My Groups</h2>
-	</div>
-	<div id = "center" class = "col-xs-11 center-block text-center home-content">
 		<ul class = "purchase-list">
 			{{#each getGroups}}
 				{{> ShowGroup}}
@@ -308,14 +309,14 @@
 </template>
 
 <template name = "ShowGroup">
-	<div class = "row proposal">
-		<div class = "row wrapper"><h2>{{Name}}</h2></div>
+	<div id = "center" class = "row proposal col-xs-8 center-block">
+		<div class = "row wrapper"><h2>{{title}}</h2></div>
 		<div class = "left-align">
-			<p id = "description" class = "wrapper">{{Description}}</p>
+			<p id = "description" class = "wrapper">{{description}}</p>
 			<div>
 				<p>Members:</p>
 				<ul>
-					{{#each member_names}}
+					{{#each getMemberNames}}
 						<li class = "wrapperx">{{.}}</li>
 					{{/each}}
 				</ul>

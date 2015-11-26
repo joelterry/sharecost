@@ -20,6 +20,9 @@ Template.home.events({
 	'click #create': function(event) {
 		Router.go('/create');
 	},
+	'click #mygroups': function(event) {
+		Router.go('/groups');
+	},
 	'click .close-button': function(event) {
 		var remove = confirm("Do you want to delete this proposal? This action cannot be undone");
 		if (remove) {
@@ -418,12 +421,25 @@ Template.CreateGroup.events({
 Template.Groups.helpers({
 	'getGroups': function() {
 		var user = Meteor.user();
-		/* Need to check that purchases has been published */
+		/* Need to check that groups has been published */
 		if (user.groups) {
 			return Groups.find({_id: {$in: user.groups}});
 		} else {
 			return null;
 		}
+	}
+});
+
+Template.ShowGroup.helpers({
+	'getMemberNames': function() {
+		var names = [];
+		for (var key in this.member_names) {
+			if (!this.member_names.hasOwnProperty(key)) {
+				continue;
+			}
+			names.push(this.member_names[key]);
+		}
+		return names;
 	}
 });
 

@@ -447,6 +447,18 @@ Template.CreateGroup.events({
 	}
 });
 
+Template.Groups.helpers({
+	'getGroups': function() {
+		var user = Meteor.user();
+		/* Need to check that purchases has been published */
+		if (user.groups) {
+			return Groups.find({_id: {$in: user.groups}});
+		} else {
+			return null;
+		}
+	}
+});
+
 
 /*Global Events*/
 var events = {

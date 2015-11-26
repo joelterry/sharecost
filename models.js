@@ -95,6 +95,7 @@ if (Meteor.isServer) {
     }else{
       this.ready();
     }
+  });
 
   Meteor.publish("pendingUsers", function () {
     this.ready();
@@ -174,7 +175,7 @@ if (Meteor.isClient) {
   /* Server publishes all purchases with current user as a member */
   Meteor.subscribe("purchases");
   Meteor.subscribe("userData");
-  Meteor.subscribe("friends");
+  Meteor.subscribe("friends")
   Meteor.subscribe("groups");
   Meteor.subscribe("pendingUsers");
   Meteor.subscribe("pendingPurchases");

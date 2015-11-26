@@ -296,4 +296,29 @@
 	<div class = "row text-center">
 		<h2>My Groups</h2>
 	</div>
+	<div id = "center" class = "col-xs-11 center-block text-center home-content">
+		<h3>Your purchase proposals...</h3>
+		<ul class = "purchase-list">
+			{{#each getGroups}}
+				{{> ShowGroup}}
+			{{/each}}
+		</ul>
+	</div>
+</template>
+
+<template name = "ShowGroup">
+	<div class = "row proposal">
+		<div class = "row wrapper"><h2>{{Name}}</h2></div>
+		<div class = "left-align">
+			<p id = "description" class = "wrapper">{{Description}}</p>
+			<div>
+				<p>Members:</p>
+				<ul>
+					{{#each member_names}}
+						<li class = "wrapperx">{{.}}</li>
+					{{/each}}
+				</ul>
+			</div>
+		</div>
+	</div>
 </template>

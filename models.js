@@ -1,10 +1,18 @@
 /*
 ===User Schema=== (this is a default Meteor Collection, fields specified here are added by the developers)
 purchases: {created: [], invited: []}
+groups: [group_id,...]
 
 ===Friend Schema===
 _id: hash NOTE: this is our user _id
 venmo_friends: [{user1}, {user2}]
+
+===Groups Schema===
+_id: hash
+title: ""
+description: ""
+members: [venmo_id,...]
+member_names: {venmo_id: name,...} NOTE: for display purposes
 
 
 ===Purchase Schema===
@@ -41,16 +49,21 @@ pendingDatabase = function() {
 
 pendingPurchasesDatabase = function() {
 	return new Mongo.Collection("pending_purchases");
+
+groupsDatabase = function(){
+    return new Mongo.Collection("groups");
 }
 
 Purchases = purchasesDatabase();
 Friends = friendsDatabase();
+Groups = groupsDatabase();
 Users = meteorUsers();
 PendingUsers = pendingDatabase();
 PendingPurchases = pendingPurchasesDatabase();*/
 Purchases = new Mongo.Collection("purchases");
 Friends = new Mongo.Collection("friends");
 Users = Meteor.users;
+Groups = new Mongo.Collection("groups");
 PendingUsers = new Mongo.Collection("pending_users");
 PendingPurchases = new Mongo.Collection("pending_purchases");
 
@@ -83,6 +96,14 @@ if (Meteor.isServer) {
 
   Meteor.publish("pendingPurchases", function () {
     this.ready();
+  });
+
+  Meteor.publish("groups", function(){
+    if (this.userId){
+      return Groups.find();
+    }else{
+      this.ready();
+    }
   });
 
   /* Helper for validating strings. min and max are inclusive.
@@ -158,4 +179,5 @@ if (Meteor.isClient) {
   Meteor.subscribe("friends");
   Meteor.subscribe("pendingUsers");
   Meteor.subscribe("pendingPurchases");
+  Meteor.subscribe("groups");
 }

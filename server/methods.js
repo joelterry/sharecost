@@ -84,6 +84,10 @@ if (Meteor.isServer){
 			 * take care of user creation for us, so I'm not sure. */
 			if (Meteor.user().purchases == undefined) {
 				Users.update(Meteor.userId(), {$set: {purchases: {created: [], invited: []}}});
+			};
+			/*same as above, but just with the groups field*/
+			if (Meteor.user().groups == undefined){
+				Users.update(Meteor.userId(), {$set: {groups: []}});
 			}
 			var venmo_id = Meteor.user().services.venmo.id;
 			var userPending = PendingUsers.findOne(venmo_id);
@@ -157,6 +161,43 @@ if (Meteor.isServer){
 		 * I made this because Meteor won't let me do it client-side. */
 		'own_purchase': function(pid, owner) {
 			Users.update(owner, {$push: {'purchases.created': pid}});
+		},
+		/*add a group to a user's groups field. pass in group id as argument and array of venmo_ids in group*/
+		'add_group': function(gid, vids){
+			var ids = Meteor.call("venmo_ids_to_ids", vids);
+			ids.forEach(function(sid){
+				Users.update({_id: sid}, {$push:{'groups': gid}});
+			});
+			return ids;
+		},
+		/* given a list of members venmoIDs, ensure no group with same members exists.
+		*  use first group member to check against the groups that they are included in */
+		'check_group_exists': function(vids){
+			var len = vids.length;
+			var memberVID = vids[0];
+			var member = Users.findOne({'services.venmo.id': memberVID});
+			var memberGIDs = member.groups;
+			var exists = false;
+			memberGIDs.forEach(function(gid){
+				var group = Groups.findOne({_id: gid});
+				var groupVIDs = group.members
+				if (groupVIDs.length == len){
+					var sum = 0;
+					groupVIDs.forEach(function(vid){
+						var counter = 0;
+						while (counter <= len - 1){
+							if (vids[counter] == vid){
+								sum++;
+							}
+							counter++;
+						}
+					});
+					if (sum == len){
+						exists = true;
+					}
+				}
+			});
+			return exists;
 		},
 		/* Called once a purchase has been unanimously approved, and attempts to
 		 * process all payments at once. Checks if members have already paid,

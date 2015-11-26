@@ -50,7 +50,20 @@
 #dumbfix {
 	margin-left: -15px;
 }
-
+.pcreate {
+	text-align: left;
+	display: inline-block;
+	margin-right: 36px;
+}
+.pgcreate {
+	text-align: center;
+	display: inline-block;
+	margin-right: 36px;
+}
+.pgroup {
+	text-align: right;
+	display: inline-block;
+}
 .proposal-form {
 	max-width: 720px;
 	background-color: #EDEAFA;

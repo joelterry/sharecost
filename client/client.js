@@ -110,19 +110,14 @@ Template.create.events({
 
 		var purch = {};
 		purch.creator = Meteor.user().services.venmo.id;
-		if ($(".group-checkbox").prop("checked")){
+		
+		/*set up members and member_names for group*/
+		if (Session.get("groupChecked") == true){
 			var abridgedGroup = Session.get("selectedGroups")[0];
 			var id = abridgedGroup.id;
 			var group = Groups.findOne({_id: id});
 			var arrInclusive = group.members;
-			// arrInclusive.forEach(function(vid){
-			// 	var user = Users.findOne({'services.venmo.id': vid});
-			// 	console.log(user);
-			// 	member_names[vid] = user.services.venmo.display_name;
-			// });
-			console.log(group.member_names)
 			purch.member_names = group.member_names;
-			console.log(purch.member_names);
 
 			/*delete current users venmo_id from group for puchase.members*/
 			var arrExclusive = [];
@@ -133,6 +128,7 @@ Template.create.events({
 			});
 			var selected = arrExclusive;
 			purch.members = selected;
+		/*set up members and member_names for friends*/
 		}else{
 			var selected = Session.get("selectedFriends");
 			member_names={};
@@ -141,7 +137,6 @@ Template.create.events({
 			});
 			member_names[purch.creator] = Meteor.user().services.venmo.display_name;
 			purch.member_names = member_names;
-			console.log(purch.member_names);
 
 			purch.members = selected.map(function(elem){return elem.id});
 		}

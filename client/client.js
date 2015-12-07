@@ -139,7 +139,7 @@ Template.create.events({
 			}
 		});
 		if (event.target.unevenSplit.checked) {
-			purch.split[purch.creator] = evenShare;
+			purch.split[purch.creator] = purch.cost - evenShare*(purch.members.length);
 		}
 		else {
 			purch.split[purch.creator] = Number($("#me").find(".cost-share").val());
